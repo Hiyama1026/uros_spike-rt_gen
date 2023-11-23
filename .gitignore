@@ -1,5 +1,5 @@
-gen
-__pycache__
-build
-install
-log
+gen/
+__pycache__/
+build/
+install/
+log/

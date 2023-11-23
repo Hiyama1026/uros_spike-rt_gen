@@ -1,5 +1,0 @@
-int32 motor_d_count
-int32 motor_e_count
-float32 x_angular_velocity
-float32 y_angular_velocity
-float32 z_angular_velocity

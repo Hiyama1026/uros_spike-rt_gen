@@ -127,7 +127,7 @@ def main():
         print('\'' + invalid_args[1] + '\' is invalid option.')
         exit(1)
 
-    with open('gen_mototr_test.yml', encoding='utf-8')as f:
+    with open('uros_config.yml', encoding='utf-8')as f:
         motor_test = yaml.safe_load(f)
 
     for first_key in motor_test.keys():

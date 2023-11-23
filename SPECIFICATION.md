@@ -4,19 +4,15 @@
 
 # ツールの使用方法
 ## 使用方法
-0. 「[環境構築](#環境構築)」に従い環境を構築する
 1. 設定ファイル「uros_config.yml」に各種設定を記述
-1. uros_spike-rt_genに移動
-    ```
-    cd ~/asp_uros_ws/micro-ROS_ASP3/uros_spike-rt_gen
-    ```
-1. 下記コマンドを実行してmicro-ROSパッケージ，及びカスタムメッセージ定義パッケージを生成
-    ```
-    python3 uros_gen.py
-    ```
+1. `micro-ROS_ASP3/uros_spike-rt_gen`で下記コマンドを実行してmicro-ROSパッケージ，及びカスタムメッセージ定義パッケージを生成
     -  `uros_spike-rt_gen/gen`に下記パッケージが生成される
         - micro-ROSパッケージ：spike_rt_uros
         - カスタムメッセージ定義パッケージ：spike_ros_msg
+    - 実行コマンド
+        ```
+        python3 uros_gen.py
+        ```
 1. Prime HubをDFUモードにする
     - PCにUSBケーブルを接続する
     - Prime HubのBluetoothボタンを押しながらPCとの接続ケーブルをPrime Hubに挿す
@@ -36,20 +32,20 @@
         cd ~/asp_uros_ws/micro-ROS_ASP3/spike-rt
         make deploy-dfu
         ```
-        - **並列ビルドが原因ででエラーになる事がある**
-            - その場合は2回ビルドを行う
-            ```
-            cd ~/asp_uros_ws/micro-ROS_ASP3/spike-rt
-            make asp.bin
-            make deploy-dfu
-            ```
+    - **並列ビルドが原因ででエラーになる事がある**
+        - その場合は2回ビルドを行う
+        ```
+        cd ~/asp_uros_ws/micro-ROS_ASP3/spike-rt
+        make asp.bin
+        make deploy-dfu
+        ```
     - Prime Hubにスマイルマークが表示されたら成功
 1. ROS2アプリの開発
     - spike_ros_msgをROS2ワークスペースの`src`ディレクトリにコピーする
         ```
         cp ~/asp_uros_ws/micro-ROS_ASP3/uros_spike-rt_gen/gen/spike_ros_msg ~/ros2_ws/src
         ```
-    - `src`ディレクトリでROS2アプリを開発する
+    - ROS2アプリを開発する
 
 ## オプション
 - 自動生成時に`$ python3 uros_gen.py [option]`でオプションが利用可能
@@ -57,9 +53,9 @@
 | コマンド | オプション内容 |
 | :---:  | :---: |
 | -c | 自走生成後に設定内容を表示する |
-| -l | micro-ROSファームウェアのビルドを自動で行う</br> (上記手順の5番を自動で行う)|
+| -l | micro-ROSファームウェアのビルドを自動で行う</br> (上記手順の4番を自動で行う)|
 | -u | micro-ROSパッケージのビルド・書き込みを自動で行う</br> (上記手順の6番を自動で行う)|
-| -lu | -lと-uの処理をどちらも行う</br> (上記手順の5番と6番を自動で行う) |
+| -lu | -lと-uの処理をどちらも行う</br> (上記手順の4番と5番を自動で行う) |
 
 # 設定ファイル（uros_config.yml）の記述方法
 ## デバイス情報の記述に関する注意
@@ -67,6 +63,7 @@
 - 設定が記述されていない場合は**デフォルト値**が設定される
 - デバイスを接続しないは何も記述しない
 - インデントは必ず**半角スペース2つ**で行う
+- 設定内容は順不同で構いません
 
 ## motorの設定内容
 
@@ -106,11 +103,11 @@
 | 項目(Key) | 設定内容 | 設定値(Value) | デフォルト |
 | :---:  | :---: | :---: | :---: |
 | hub_program_cycle | uROS送信データの送信周期(ms)</br>（トピック「spike_status」の送信周期） | 1以上の整数 | 100 |
-| enable_imu | IMUを有効にするかしないか | True または False | False |
+| enable_imu | IMUを有効にするか | True または False | False |
 | imu_mode | IMUのモード | temperature または gyro | temperature |
-| enable_battery_management | Hubバッテリー情報の送信を有効にするかしないか | True または False | False |
-| enable_button | Hub内蔵ボタンを有効にするかしないか | True または False | False |
-| enable_speaker | Hub内蔵スピーカを有効にするかしないか | True または False | False |
+| enable_battery_management | Hubバッテリー情報の送信を有効にするか | True または False | False |
+| enable_button | Hub内蔵ボタンを有効にするか | True または False | False |
+| enable_speaker | Hub内蔵スピーカを有効にするか | True または False | False |
 | enable_speaker | Hub内蔵スピーカの音量 | 0 ~ 100の整数 | 50 |
 | opening | Hub起動時のメッセージ表示を有効にするか | True または False | False |
 

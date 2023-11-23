@@ -43,6 +43,10 @@ Prime Hub向けソフトウェアプラットホームである[spike-rt](https:
     - Prime HubとRaspberry PiはUARTにより接続する
         - 詳細は後述の「[環境構築](#環境構築)」を参考
 
+# 本ツールの使用方法
+- 本ドキュメントの「[環境構築](#環境構築)」に従い環境を構築する
+- 仕様書「[SPECIFICATION.md](./SPECIFICATION.md)」に従いツールを使用する
+
 # 環境構築
 ## spike-rtとmicro-ROS_ASP3をインストール
 - micro-ROSファームウェアのビルドを行うPC(Linux)上でワークスペースを作成
@@ -67,9 +71,13 @@ Prime Hub向けソフトウェアプラットホームである[spike-rt](https:
     - それぞれを下記を参考にセットアップ
         - [spike-rt](https://github.com/spike-rt/spike-rt)
         - [micro-ROS_ASP3](https://github.com/exshonda/micro-ROS_ASP3)
-            - `Makefile.config`のターゲットボードはPrime Hubを選択する
-            - spike-rt対応のセットアップ([micro-ROS_ASP3/spike-rt
-/README.md](https://github.com/exshonda/micro-ROS_ASP3/blob/master/spike-rt/README.md))も行う
+- micro-ROS_ASP3でPrime Hub向けの設定を行う
+    - [micro-ROS_ASP3/spike-rt/README.md](https://github.com/exshonda/micro-ROS_ASP3/blob/master/spike-rt/README.md)を参考にspike-rt対応のセットアップを行う
+    - `micro-ROS_ASP3/Makefile.config`のターゲットボードをPrime Hubを選択する
+    - `micro-ROS_ASP3/micro_ros_asp/micro_ros_asp.mk`のINCLUDESに下記を追加
+        ```
+        INCLUDES += -I$(MIROROS_ASP3_TOP_DIR)/$(MICROROS_INC)/spike_ros_msg
+        ```
 
 ## 本ツールのインストール
 - micro-ROS_ASP3の直下にインストール
@@ -228,11 +236,44 @@ Prime Hub向けソフトウェアプラットホームである[spike-rt](https:
         ...
         ```
 
+1. ROS2のワークスペースを作成
+    ```
+    mkdir ~/ros2_ws
+    cd ~/ros2_ws
+    mkdir src
+    colcon build
+    . install/setup.bash
+    ```
+    - 以降ROS2パッケージは`ros2_ws/src`に作成する
+    - パッケージを作成したらビルドとセットアップを行う
+        ```
+        cd ~/ros2_ws
+        colcon build
+        . install/setup.bash
+        ```
+
 ### ROS2アプリをその他OSの汎用PC（Windows，RHEL，macOS）で開発する場合
 - [ここ](https://docs.ros.org/en/humble/Installation.html)などのROS2公式サイトを参考にインストールする
 
 ### ROS2アプリをRaspberry Pi上で開発する場合
+- 後述の付録「[ROS2のRaspberry Piへのインストール方法](#ros2のraspberry-piへのインストール方法)」を参照
 <!--
+1. **Cパッケージのビルド時にエラーになる場合の解決方法**
+    - Cパッケージ(raspike_uros_msg)のビルドでエラーになる事がある
+    - その場合は`/opt/ros/humble/opt`にある`libcurl_vendor`フォルダを削除する
+        ```bash
+        cd /opt/ros/humble/opt
+        sudo rm -rf libcurl_vendor
+        cd ~/ros2_ws
+        colcon build
+        ```
+-->
+## Prime HubとRaspberry Piを接続
+- 前述の手順でRaspberry Piに接続したシリアルケーブルをPrime Hubの**ポートF**に接続する
+
+
+## 付録
+### ROS2のRaspberry Piへのインストール方法
 1. アップデート
     ```bash
     sudo apt update
@@ -286,19 +327,3 @@ Prime Hub向けソフトウェアプラットホームである[spike-rt](https:
     colcon build
     . install/setup.bash
     ```
--->
-1. **Cパッケージのビルド時にエラーになる場合の解決方法**
-    - Cパッケージ(raspike_uros_msg)のビルドでエラーになる事がある
-    - その場合は`/opt/ros/humble/opt`にある`libcurl_vendor`フォルダを削除する
-        ```bash
-        cd /opt/ros/humble/opt
-        sudo rm -rf libcurl_vendor
-        cd ~/ros2_ws
-        colcon build
-        ```
-
-## Prime HubとRaspberry Piを接続
-- 前述の手順でRaspberry Piに接続したシリアルケーブルをPrime Hubの**ポートF**に接続する
-
-# ツールの使用方法
-ToDo

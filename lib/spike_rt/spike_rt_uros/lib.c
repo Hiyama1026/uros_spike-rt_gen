@@ -82,28 +82,17 @@ int8_t get_color_sensor_value(int8_t color_mode, pup_device_t *u_port, int16_t *
             break;
         case 4:
             color_rgb = pup_color_sensor_rgb(u_port);
-            color_hsv = pup_color_sensor_hsv(u_port, true);
-            if(color_hsv.h==0 && color_hsv.s==0 && color_hsv.v==0)
-            {
-            }
-            else{
-                *c_val_1 = (int16_t)(color_rgb.r / 4);  
-                *c_val_2 = (int16_t)(color_rgb.g / 4);          
-                *c_val_3 = (int16_t)(color_rgb.b / 4);
-                current_col_mode = 4;
-            }                
+            *c_val_1 = (int16_t)(color_rgb.r / 4);  
+            *c_val_2 = (int16_t)(color_rgb.g / 4);          
+            *c_val_3 = (int16_t)(color_rgb.b / 4);             
+            current_col_mode = 4;
             break;
         case 5:
             color_hsv = pup_color_sensor_hsv(u_port, true);
-            if(color_hsv.h==0 && color_hsv.s==0 && color_hsv.v==0)
-            {
-            }
-            else{
-                *c_val_1 = (int16_t)(color_hsv.h / 4);  
-                *c_val_2 = (int16_t)(color_hsv.s / 4);          
-                *c_val_3 = (int16_t)(color_hsv.v / 4);
-                current_col_mode = 5;
-            }                
+            *c_val_1 = (int16_t)(color_hsv.h / 4);  
+            *c_val_2 = (int16_t)(color_hsv.s / 4);          
+            *c_val_3 = (int16_t)(color_hsv.v / 4);      
+            current_col_mode = 5;
             break;
         default:
             current_col_mode = 0;

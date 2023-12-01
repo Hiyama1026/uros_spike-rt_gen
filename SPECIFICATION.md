@@ -150,3 +150,17 @@ hub:
   speaker_volume: 30
   opening: False 
 ```
+
+# 設計メモ
+## 送信QoS
+- ROSは送信QoSとしてbest-effort通信またはreliable通信を利用できる．
+  - reliable通信：ACKを返す
+  - bsst-effort通信：ACKを返さない
+
+- 周期送信するメッセージにreliable通信を使用するとメッセージをドロップすることがある
+  - 短い周期で周期送信するメッセージにreliable通信を使用するとACK処理が負荷となり，データをドロップする
+  - 特にmicro-ROSが送信側のメッセージにreliable通信を使用するとドロップしやすい
+    - micro-ROSはシングルタスクで稼働している
+    - ACK待ちの優先度はサブスクライバの実行優先度よりも高い
+      - ACK待ちの間はサブスクライバが実行されない
+    - ACK待ちの間に複数のデータを受信した場合は受信データをドロップする

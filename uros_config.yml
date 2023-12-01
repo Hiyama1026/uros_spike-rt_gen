@@ -1,36 +1,21 @@
-#PortA:
-#  device: ultrasonic-sensor
-#  qos: best-effort
-#  enable_lights: true
-#  light_qos: best-effort
-#
-#PortB:
-#  device: color-sensor
-#  qos: best-effort
-#  enable_lights: True
-#  light_qos: best-effort
-#
-#PortC:
-#  device: force-sensor
-#
-PortD:
-  device: motor
+PortA:
+  device: color-sensor
   qos: best-effort
-  wise: clock
-  run_mode: set-speed
+  enable_lights: True
+  light_qos: best-effort
 
-PortE:
-  device: motor
+PortB:
+  device: ultrasonic-sensor
   qos: best-effort
-  wise: clock
-  run_mode: set-power
+  enable_lights: true
+  light_qos: best-effort
 
 hub:
   hub_program_cycle: 100
-  enable_imu: true
-  imu_mode: gyro
-  enable_battery_management: true
+  enable_imu: False
+  #imu_mode: false
+  enable_battery_management: False
   enable_button: True
-  enable_speaker: true
-  speaker_volume: 30
+  enable_speaker: False
+  #speaker_volume: 30
   opening: False

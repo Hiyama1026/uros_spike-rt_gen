@@ -1,0 +1,6 @@
+int8 color_a_mode_id
+int16 color_a_sensor_value_1
+int16 color_a_sensor_value_2
+int16 color_a_sensor_value_3
+int8 ultrasonic_b_mode_id
+int16 ultrasonic_b_sensor

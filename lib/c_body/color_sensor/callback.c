@@ -7,7 +7,7 @@ void color@@_mode_callback(const void * msgin)
 <L
 void color@@_light_callback(const void * msgin)
 {
-    const spike_ros_msg__msg__ColorLightMessage * color@@_light_val = (const spike_ros_msg__msg__ColorLightMessage *)msgin;
+    const @pkg_name@__msg__ColorLightMessage * color@@_light_val = (const @pkg_name@__msg__ColorLightMessage *)msgin;
 
     pup_color_sensor_light_set(color@@, color@@_light_val->light1, color@@_light_val->light2, color@@_light_val->light3);
 }

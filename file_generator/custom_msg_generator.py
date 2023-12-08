@@ -7,10 +7,10 @@ import config_generator.config as conf
 class Gen_msg_file:
     def __init__(self):
         self.spike_prime_msg_text = ''
-        self.lib_path = 'lib/msg/spike_ros_msg/'
+        self.lib_path = 'lib/msg/custom_msg_frame/'
         self.source_path = 'lib/msg/source/'
-        self.target_dir_path = 'gen/spike_ros_msg/'
-        self.target_msg_dir_path = 'gen/spike_ros_msg/msg/'
+        self.target_dir_path = 'gen/'
+        self.target_msg_dir_path = ''
         self.motor_target_path = ''
         self.c_light_target_path = ''
         self.u_light_target_path = ''
@@ -19,7 +19,11 @@ class Gen_msg_file:
     
 msg_info = Gen_msg_file()
 
-def gen_custom_msg():    
+def gen_custom_msg():
+    # create target path
+    msg_info.target_dir_path += (glb.package_name + '/' + glb.msg_pkg_name + '/')
+    msg_info.target_msg_dir_path = (msg_info.target_dir_path + 'msg/')
+
     shutil.copytree(msg_info.lib_path, msg_info.target_dir_path)
     os.mkdir(msg_info.target_msg_dir_path)
 
@@ -29,12 +33,22 @@ def gen_custom_msg():
     
     # fix CMakeLists.txt
     with open(msg_info.target_dir_path + 'CMakeLists.txt')as c_make:
-            CMake = c_make.read()
-    c_make_contents = re.sub('@msg_file_name@', (glb.msg_camke_list[:-1]), CMake)
+        CMake = c_make.read()
+    c_make_contents = re.sub('@msg_pkg_name@', glb.msg_pkg_name, CMake)
+    c_make_contents = re.sub('@msg_file_name@', (glb.msg_camke_list[:-1]), c_make_contents)
 
     CMake = open(msg_info.target_dir_path + 'CMakeLists.txt', 'w')
     CMake.write(c_make_contents)
     CMake.close()
+
+    # fix package.xml
+    with open(msg_info.target_dir_path + 'package.xml')as xml:
+        p_xml = xml.read()
+    xml_contents = re.sub('@msg_pkg_name@', glb.msg_pkg_name, p_xml)
+
+    p_xml = open(msg_info.target_dir_path + 'package.xml', 'w')
+    p_xml.write(xml_contents)
+    p_xml.close()
 
     return
 

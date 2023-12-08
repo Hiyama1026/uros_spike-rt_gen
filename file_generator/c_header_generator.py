@@ -5,7 +5,8 @@ import global_def as glb
 def gen_c_header():
     bace_path = 'lib/c_body/bace/c_bace_header.c'
     lib_path = 'lib/c_body/bace/lib_header_bace.c'
-    target_path = 'gen/spike_rt_uros/'
+    # create target path
+    target_path = 'gen/' + glb.package_name + '/' + glb.package_name + '/'
 
     with open(bace_path) as c_hesd:
         c_hesd_string = c_hesd.read()
@@ -21,7 +22,7 @@ def gen_c_header():
     c_h.write(c_hesd_string)
     c_h.close()
     
-    # enable each device
+    # generate lib.h
     with open(lib_path) as lib_h:
         l_head_string = lib_h.read()
 

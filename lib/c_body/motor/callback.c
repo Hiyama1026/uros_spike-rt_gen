@@ -11,7 +11,7 @@ void motor@@_speed_callback(const void * msgin)     // set speed or power
 
 void motor@@_stop_callback(const void * msgin)
 {
-    const spike_ros_msg__msg__MotorStopReset * motor@@_stop_reset_val = (const spike_ros_msg__msg__MotorStopReset *)msgin;
+    const @pkg_name@__msg__MotorStopReset * motor@@_stop_reset_val = (const @pkg_name@__msg__MotorStopReset *)msgin;
 
     if (motor@@_stop_reset_val->motor_reset)    pup_motor_reset_count(motor@@);
 

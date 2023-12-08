@@ -1,3 +1,5 @@
+package_name = 'spike_rt_uros'      # default name
+msg_pkg_name = 'spike-rt_uros_msg'
 
 motor_number = 0
 color_number = 0
@@ -22,7 +24,7 @@ print_conf = ''
 c_body_string = ''
 
 # カスタムメッセージincludeフォーマット
-include_format = '#include <spike_ros_msg/msg/@motor_reset_h@>\n'
+include_format = '#include <@pkg_name@/msg/@motor_reset_h@>\n'
 
 # pub・sub定義フォーマット
 def_publisher_format = "rcl_publisher_t @publisher_name@;\n"
@@ -35,9 +37,9 @@ msg_publish_func = 'RCSOFTCHECK(rcl_publish(&@publisher_name@, &@msg_val_name@, 
 sed_int16_format = "std_msgs__msg__Int16 @message_name@;\n"
 sed_int8_format = "std_msgs__msg__Int8 @message_name@;\n"
 sed_bool_format = "std_msgs__msg__Bool @message_name@;\n"
-motor_stop_reset_type_form = "spike_ros_msg__msg__MotorStopReset @value_name@;\n"
-color_light_type_form = "spike_ros_msg__msg__ColorLightMessage @value_name@;\n"
-ultra_light_type_form = "spike_ros_msg__msg__UltrasonicLightMessage @ultra_name@;\n"
+motor_stop_reset_type_form = "@pkg_name@__msg__MotorStopReset @value_name@;\n"
+color_light_type_form = "@pkg_name@__msg__ColorLightMessage @value_name@;\n"
+ultra_light_type_form = "@pkg_name@__msg__UltrasonicLightMessage @ultra_name@;\n"
 
 # エラー型定義フォーマット
 motor_err_format = "static pbio_error_t @motor_name@_err;\n"

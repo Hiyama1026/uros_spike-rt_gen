@@ -13,7 +13,7 @@ class C_body_val:
         self.current_speed_msg_value_name = ''          # motor speed
         self.current_stop_subscriver_name = ''          # motor stop
         self.current_stop_msg_value_name = ''           # motor speed
-        self.target_dir_path = 'gen/spike_rt_uros/'
+        self.target_dir_path = 'gen/'
 
 cb = C_body_val()
 
@@ -21,6 +21,12 @@ def gen_c_body():
 
     with open('lib/c_body/bace/c_bace_body.c') as c_body:
         glb.c_body_string = c_body.read()
+
+    # create path
+    cb.target_dir_path += (glb.package_name + '/' + glb.package_name+ '/')
+    
+    # create include format
+    glb.include_format = re.sub('@pkg_name@', glb.msg_pkg_name, glb.include_format)
 
     if not conf.portA.device == None:
         definition_strings_generator('A')
@@ -46,12 +52,10 @@ def gen_c_body():
     # generate C file
     generate_cbody()
 
-    #print(glb.c_body_string)
-
     return
 
 def generate_cbody():
-    lib_uros_path = 'lib/spike_rt/spike_rt_uros'
+    lib_uros_path = 'lib/spike_rt/uros_frame'
     shutil.copytree(lib_uros_path, cb.target_dir_path)
 
     c_f = open(cb.target_dir_path + 'uros.c', 'w')
@@ -139,7 +143,7 @@ def hub_configuration_generator():
 
         glb.include_msgs += text_replacer('spike_prime_message.h', glb.include_format)
         glb.publisher_definitions += text_replacer('spike_status_publisher', glb.def_publisher_format)
-        spike_ros_msg_name =  'spike_ros_msg__msg__SpikePrimeMessage spike_status_val;\n'
+        spike_ros_msg_name =  gen_msg_def('@pkg_name@__msg__SpikePrimeMessage spike_status_val;\n')
         glb.msg_obj_definitions += spike_ros_msg_name
         # pub init
         create_init_b_effort_publisher('spike_status_publisher', spike_ros_msg_name, 'spike_status')        # Note トピック名を変更
@@ -205,7 +209,7 @@ def hub_configuration_generator():
 
         glb.include_msgs += text_replacer('spike_power_status_message.h', glb.include_format)
         glb.publisher_definitions += text_replacer('power_status_publisher', glb.def_publisher_format)
-        battery_msg_name = 'spike_ros_msg__msg__SpikePowerStatusMessage power_val;\n'
+        battery_msg_name = gen_msg_def('@pkg_name@__msg__SpikePowerStatusMessage power_val;\n')
         glb.msg_obj_definitions += battery_msg_name
         with open(mod_path + 'battery/timer_callback.c') as bat_tcb:
             bat_t = bat_tcb.read()
@@ -223,17 +227,18 @@ def hub_configuration_generator():
 
         glb.include_msgs += text_replacer('speaker_message.h', glb.include_format)
         glb.subscliber_definitions += text_replacer('speaker_subscriber', glb.def_subscliber_format)
-        glb.msg_obj_definitions += 'spike_ros_msg__msg__SpeakerMessage speaker_val;\n'
+        glb.msg_obj_definitions += gen_msg_def('@pkg_name@__msg__SpeakerMessage speaker_val;\n')
         with open(mod_path + 'speaker/timer_callback.c') as sp_tcb:
             sp_timer = sp_tcb.read()
         glb.c_body_string = re.sub('@speaker_stop@', sp_timer, glb.c_body_string)
         with open(mod_path + 'speaker/callback.c') as sp_cb:
             sp_call = sp_cb.read()
+        sp_call = re.sub('@pkg_name@', glb.msg_pkg_name, sp_call)
         glb.c_body_string = re.sub('@speaker_callback@', sp_call, glb.c_body_string)
         sp_volume = re.sub('@volume@', str(conf.hub.speaker_volume), '    hub_speaker_set_volume(@volume@);')
         glb.c_body_string = re.sub('@speaker_volume@', sp_volume, glb.c_body_string)
 
-        create_init_hub_subscriber('speaker_subscriber', 'spike_ros_msg__msg__SpeakerMessage speaker_val', 'speaker_tone')
+        create_init_hub_subscriber('speaker_subscriber', gen_msg_def('@pkg_name@__msg__SpeakerMessage speaker_val'), 'speaker_tone')
         create_add_hub_executor('speaker_subscriber', 'speaker_val', 'speaker_callback')
 
 def generate_common_functions():
@@ -258,10 +263,9 @@ def motor_global_def_generator(port):
     glb.msg_obj_definitions += text_replacer(std_msg_name, glb.sed_int16_format)    # std_int16
     sr_msg_type_name = text_replacer(motor_name, "@motor_name@_stop_reset_val")
     cb.current_stop_msg_value_name = sr_msg_type_name
-    glb.msg_obj_definitions += text_replacer(sr_msg_type_name, glb.motor_stop_reset_type_form) #custom message
+    glb.msg_obj_definitions += text_replacer(sr_msg_type_name, gen_msg_def(glb.motor_stop_reset_type_form)) #custom message
     glb.device_pointer_def += text_replacer(motor_name, glb.motor_err_format)
     glb.device_pointer_def += text_replacer(motor_name, glb.motor_ptr_format)
-
     return
 
 def color_global_def_generator(port, port_obj):
@@ -277,7 +281,7 @@ def color_global_def_generator(port, port_obj):
 
         c_light_type = text_replacer(color_name, "@color_name@_light_val")
         cb.current_light_msg_value_name = c_light_type
-        glb.msg_obj_definitions += text_replacer(c_light_type, glb.color_light_type_form)
+        glb.msg_obj_definitions += text_replacer(c_light_type, gen_msg_def(glb.color_light_type_form))
 
     gen_def_text, gen_sub_text = subscliber_definition_generator(port, 'color@_mode_subscriber')
     glb.subscliber_definitions += gen_def_text
@@ -305,7 +309,7 @@ def ultrasonic_global_def_generator(port, port_obj):
 
         u_light_type = text_replacer(ultrasonic_name, "@ultrasonic_name@_light_val")        # Note: テストプログラムから名前を変更している
         cb.current_light_msg_value_name = u_light_type
-        glb.msg_obj_definitions += text_replacer(u_light_type, glb.ultra_light_type_form)
+        glb.msg_obj_definitions += text_replacer(u_light_type, gen_msg_def(glb.ultra_light_type_form))
 
     gen_def_text, gen_sub_text = subscliber_definition_generator(port, 'ultrasonic@_mode_subscriber')
     glb.subscliber_definitions += gen_def_text
@@ -382,6 +386,7 @@ def motor_port_dep_generator(port, port_obj):
     else:
         m_call_back = re.sub('<S', '', m_call_back)
         m_call_back = re.sub('<P(.|\s)*?<P', '', m_call_back)
+    m_call_back += re.sub('@pkg_name@', glb.msg_pkg_name, m_call_back)
     glb.motor_callback_func += ('\n' + re.sub('@@', port, m_call_back) + '\n')
 
 
@@ -390,7 +395,7 @@ def motor_port_dep_generator(port, port_obj):
 
     # サブスクライバ生成コードの生成
     create_init_dev_subscriber(port_obj, cb.current_speed_subscriver_name, glb.sed_int16_format, glb.motor_speed_topic)
-    create_init_dev_subscriber(port_obj, cb.current_stop_subscriver_name, glb.motor_stop_reset_type_form, glb.motor_stop_topic)
+    create_init_dev_subscriber(port_obj, cb.current_stop_subscriver_name, gen_msg_def(glb.motor_stop_reset_type_form), glb.motor_stop_topic)
 
     # add executor 生成
     create_add_dev_executor(port_obj, cb.current_speed_subscriver_name, cb.current_speed_msg_value_name, glb.motor_speed_callback_form)
@@ -423,6 +428,7 @@ def color_port_dep_generator(port, port_obj):
     # コールバック関数・subscriber init・add_executorの生成
     with open(p_path + 'callback.c') as p_call:
         c_call_bk_func = p_call.read()
+    c_call_bk_func = re.sub('@pkg_name@', glb.msg_pkg_name, c_call_bk_func)
     c_call_bk_func = re.sub('@@', port, c_call_bk_func)
     # mode subscriber init
     create_init_dev_subscriber(port_obj, cb.current_mode_subscriver_name, glb.sed_int8_format, glb.color_mode_topic)
@@ -431,7 +437,7 @@ def color_port_dep_generator(port, port_obj):
 
     if port_obj.config.enable_lights == True:
         glb.color_callback_func += ('\n' + re.sub('<L', '', c_call_bk_func))
-        create_init_dev_subscriber(port_obj, cb.current_light_subscriver_name, glb.color_light_type_form, glb.color_light_topic)
+        create_init_dev_subscriber(port_obj, cb.current_light_subscriver_name, gen_msg_def(glb.color_light_type_form), glb.color_light_topic)
         create_add_dev_executor(port_obj, cb.current_light_subscriver_name, cb.current_light_msg_value_name, glb.color_light_callback_form)
     else:
         glb.color_callback_func += ('\n' + re.sub('<L(.|\s)*?<L', '', c_call_bk_func))
@@ -457,6 +463,7 @@ def ultra_port_dep_generator(port, port_obj):
     # コールバック関数・subscriber init・add_executorの生成
     with open(p_path + 'callback.c') as p_call:
         u_call_bk_func = p_call.read()
+    u_call_bk_func = re.sub('@pkg_name@', glb.msg_pkg_name, u_call_bk_func)
     u_call_bk_func = re.sub('@@', port, u_call_bk_func)
     u_call_bk_func = lowercase_replacer(port, u_call_bk_func)
     # mode subscriber init
@@ -466,7 +473,7 @@ def ultra_port_dep_generator(port, port_obj):
 
     if port_obj.config.enable_lights == True:                           # カラーライト有効
         glb.ultra_callback_func += ('\n' + re.sub('<L', '', u_call_bk_func))
-        create_init_dev_subscriber(port_obj, cb.current_light_subscriver_name, glb.ultra_light_type_form, glb.ultra_light_topic)
+        create_init_dev_subscriber(port_obj, cb.current_light_subscriver_name, gen_msg_def(glb.ultra_light_type_form), glb.ultra_light_topic)
         create_add_dev_executor(port_obj, cb.current_light_subscriver_name, cb.current_light_msg_value_name, glb.ultra_light_callback_form)
     else:
         glb.ultra_callback_func += ('\n' + re.sub('<L(.|\s)*?<L', '', u_call_bk_func))
@@ -575,6 +582,9 @@ def create_add_hub_executor(sub_name, msg_val_name, call_back_name):
     glb.add_executors += re.sub('@call_back@', call_back_name, gen_text)
     glb.nub_subscriber += 1
     return
+
+def gen_msg_def(format_txt):
+    return re.sub('@pkg_name@', glb.msg_pkg_name, format_txt)
 
 def lowercase_replacer(upper, text):
     lower = ''

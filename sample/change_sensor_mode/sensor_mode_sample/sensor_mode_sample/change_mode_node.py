@@ -1,6 +1,6 @@
 import rclpy
 from std_msgs.msg import Int8
-from spike_ros_msg.msg import SpikePrimeMessage
+from change_sensor_mode_msg.msg import SpikePrimeMessage
 
 from rclpy.node import Node
 from rclpy.qos import QoSProfile

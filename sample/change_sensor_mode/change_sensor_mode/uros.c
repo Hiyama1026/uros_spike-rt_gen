@@ -36,7 +36,7 @@
 #include <std_msgs/msg/int16.h>		//int16
 #include <std_msgs/msg/bool.h>		//bool
 
-#include <spike_ros_msg/msg/spike_prime_message.h>
+#include <change_sensor_mode_msg/msg/spike_prime_message.h>
 
 
 
@@ -54,7 +54,7 @@ rcl_subscription_t ultrasonicB_mode_subscriber;
 
 std_msgs__msg__Int8 colorA_sensor_mode;
 std_msgs__msg__Int8 ultrasonicB_sensor_mode;
-spike_ros_msg__msg__SpikePrimeMessage spike_status_val;
+change_sensor_mode_msg__msg__SpikePrimeMessage spike_status_val;
 std_msgs__msg__Int8 hub_button_val;
 
 
@@ -213,7 +213,7 @@ uros_task(intptr_t exinf)
     RCCHECK(rclc_node_init_default(&node, "spike_state_node", "", &support));
     
     // Create publisher
-    RCCHECK(rclc_publisher_init_best_effort(&spike_status_publisher, &node, ROSIDL_GET_MSG_TYPE_SUPPORT(spike_ros_msg, msg, SpikePrimeMessage), "spike_status"));
+    RCCHECK(rclc_publisher_init_best_effort(&spike_status_publisher, &node, ROSIDL_GET_MSG_TYPE_SUPPORT(change_sensor_mode_msg, msg, SpikePrimeMessage), "spike_status"));
     RCCHECK(rclc_publisher_init_best_effort(&button_status_publisher, &node, ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int8), "spike_button_status"));
 
     

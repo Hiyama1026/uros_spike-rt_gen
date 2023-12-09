@@ -80,6 +80,9 @@ SPIKE Prime Hub向けのソフトウェアプラットホームである[spike-r
 - PCとHubはUARTにより接続する
     - Hub側は接続ケーブルを**ポートF**に接続する
     - PC側はUSB等で接続する
+</br>
+![a](./img/ubuntu_hub_connect.jpg)
+</br>
 ### エージェントのビルドと実行
 - ToDo
 

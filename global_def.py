@@ -1,5 +1,5 @@
 package_name = 'spike_rt_uros'      # default name
-msg_pkg_name = 'spike-rt_uros_msg'
+msg_pkg_name = 'spike_rt_uros_msg'
 
 motor_number = 0
 color_number = 0

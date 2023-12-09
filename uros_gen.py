@@ -15,8 +15,18 @@ import file_generator.c_body_generator as make_c
 import file_generator.c_header_generator as make_h
 import file_generator.custom_msg_generator as make_msg
 
+class Setup_val:
+    def __init__(self):
+        self.non_confirm = False
 
-#key_names = list()
+suv = Setup_val()
+
+def show_help():
+    with open('usage.txt', encoding='utf-8')as hlp:
+        h = hlp.read()
+    
+    print(h)
+    exit(1)
 
 def set_cfgs(port, cfg_list, cfg_contents):
     
@@ -58,7 +68,7 @@ def set_cfgs(port, cfg_list, cfg_contents):
         print("err: \"" + port + "\" is unknown key.")
         exit(1)
 
-    return
+    return    
 
 def is_alphabet(char):
     if char >= 'a' and char <= 'z':
@@ -97,8 +107,53 @@ def read_name():
                 exit(1)
         
         glb.msg_pkg_name = glb.package_name + '_msg'
+    
+    if '-py'in glb.args:
+        create_ros2_pkg('-py')
+
+    if '-cpp' in glb.args:
+        create_ros2_pkg('-cpp')
     return
 
+def create_ros2_pkg(opt):
+    opt_index = glb.args.index(opt)
+    ros2_pkg = glb.args[opt_index + 1]
+    glb.args.remove(ros2_pkg)
+    ros2_ws_path = '../../ros2_ws/'
+    ros2_source_path = ros2_ws_path + 'src/'
+    create_cmd = "(cd ../../ros2_ws/src && "
+
+    if not is_alphabet(ros2_pkg[0]):
+        print('err: ROS2 package name must begin with an alphabet.')
+        exit(1)
+
+    for char in ros2_pkg:
+        if (not is_alphabet(char)) and (not is_valid_char(char)):
+            print('err: Package name error. (inviled: ' + char + ')')
+            exit(1)
+
+    if not os.path.isdir(ros2_ws_path):
+        print('err: Can not find ros2_ws')
+        exit(1)
+    
+    if not os.path.isdir(ros2_source_path):
+        os.mkdir(ros2_source_path)
+    
+    if os.path.isdir(ros2_source_path + ros2_pkg):
+        duplicate_pkg(ros2_pkg, ros2_source_path, 'ROS2')
+        shutil.rmtree(ros2_source_path + ros2_pkg)
+    
+    if opt == '-py':
+        create_cmd += "ros2 pkg create --build-type ament_python " + ros2_pkg + " --dependencies rclpy)"
+    else:
+        create_cmd += "ros2 pkg create --build-type ament_cmake " + ros2_pkg + ")"
+
+    try:
+        subprocess.run(create_cmd, shell=True, check=True)   # ROS2パッケージ生成
+    except subprocess.CalledProcessError:
+        exit(1)
+    print('\nSucceed to create a ROS2 package.\n\n')
+    return
 
 def arg_build_process():
     target_msg_path = '../external/primehub/firmware/mcu_ws/' + glb.msg_pkg_name
@@ -113,6 +168,7 @@ def arg_build_process():
         add_include_to_makefile()
 
         if os.path.isdir(target_msg_path):
+            duplicate_pkg(glb.msg_pkg_name, target_msg_path, 'message_def')
             shutil.rmtree(target_msg_path)
         shutil.copytree(msg_source_path, target_msg_path)
         try:
@@ -120,6 +176,7 @@ def arg_build_process():
         except subprocess.CalledProcessError:
             exit(1)
         if os.path.isdir(target_uros_path):
+            duplicate_pkg(glb.package_name, target_uros_path, 'micro-ROS')
             shutil.rmtree(target_uros_path)
         shutil.copytree(uros_source_path, target_uros_path)
         try:
@@ -134,6 +191,7 @@ def arg_build_process():
     if '-l' in glb.args and not is_built:
         add_include_to_makefile()
         if os.path.isdir(target_msg_path):
+            duplicate_pkg(glb.msg_pkg_name, target_msg_path, 'message_def')
             shutil.rmtree(target_msg_path)
         shutil.copytree(msg_source_path, target_msg_path)
         try:
@@ -145,10 +203,11 @@ def arg_build_process():
         add_include_to_makefile()
 
         if os.path.isdir(target_uros_path):
+            duplicate_pkg(glb.package_name, target_uros_path, 'micro-ROS')
             shutil.rmtree(target_uros_path)
         shutil.copytree(uros_source_path, target_uros_path)
         try:
-            subprocess.run("(cd ../spike-rt/spike_rt_uros && make deploy-dfu)", shell=True, check=True)   
+            subprocess.run(cmd_build_uros, shell=True, check=True)   
         except subprocess.CalledProcessError:
             try:
                 print('\nLog from "uros_spike-rt_gen": Retry "$ make deploy-dfu"\n')
@@ -156,10 +215,12 @@ def arg_build_process():
             except subprocess.CalledProcessError:
                 exit(1)  
     
-    if '-ro' in glb.args:
+    if '-mc' in glb.args:
         if os.path.isdir(ros2_target_path):
+            duplicate_pkg(glb.msg_pkg_name, ros2_target_path, 'message_def')
             shutil.rmtree(ros2_target_path)
         shutil.copytree(msg_source_path, ros2_target_path)
+    
     return
 
 def add_include_to_makefile():
@@ -182,12 +243,15 @@ def add_include_to_makefile():
     makefile.write(mk)
     makefile.close()
 
-def duplicate_pkg():
-    print('WARN: "' + glb.package_name + '" is already exist.')
+def duplicate_pkg(pkg_name, path, pkg_type):
+    if suv.non_confirm:
+        return
+
+    print('\nWARN: "' + pkg_name + '" is already exist in "' + path + '".')
     while True:
-        c = input('Do you want to delete the old package? [Y/n]: ')
+        c = input('Are you sure you want to permanently delete this old ' + pkg_type + ' package? [Y/n]: ')
         if c in ['y', 'Y', 'yes', 'Yes', 'YES', '']:
-            print('Remake "' + glb.package_name + '".')
+            print('Remake "' + pkg_name + '".')
             return
         elif c in ['n', 'N', 'no', 'No', 'NO']:
             print('Stop generate packages.')
@@ -215,17 +279,25 @@ def export_ignore_count():
 # main()
 #
 def main():
-    valid_args = ['-l', '-u', '-lu', '-c', '-n', '-ro']
+    valid_args = ['-l', '-u', '-lu', '-c', '-n', '-mc', '-py', '-cpp', '-f', '-h']
     invalid_args = list()
+    gen_path = 'uros_spike-rt_gen/gen'
+
+    glb.args = sys.argv
+
+    if '-h' in glb.args:
+        show_help()
 
     if not os.path.isdir('gen'):
         os.mkdir('gen')
-    glb.args = sys.argv
     
+    if '-f' in glb.args:
+        suv.non_confirm = True
+
     read_name()
     
     if os.path.isdir('gen/' + glb.package_name):
-        duplicate_pkg()
+        duplicate_pkg(glb.package_name, gen_path, 'micro-ROS')
         shutil.rmtree('gen/' + glb.package_name)
 
 
@@ -265,6 +337,7 @@ def main():
         print(glb.print_conf)
         print("======= Configuration =======\n")
     
+    print('Success!')
 
 # mainルーチン
 if __name__ == "__main__":

@@ -2,32 +2,29 @@
 
 # 本ツールについて
 LEGO® Education SPIKE™ Prime向けmicro-ROSファームウェアの自動生成ツール．</Br>
-Prime Hub向けソフトウェアプラットホームである[spike-rt](https://github.com/spike-rt/spike-rt)と，ASP3カーネル向けmicro-ROSミドルウェアである[micro-ROS_ASP3](https://github.com/exshonda/micro-ROS_ASP3)を使用する．
+SPIKE Prime Hub向けのソフトウェアプラットホームである[spike-rt](https://github.com/spike-rt/spike-rt)と，ASP3カーネル向けmicro-ROSミドルウェアである[micro-ROS_ASP3](https://github.com/exshonda/micro-ROS_ASP3)を使用する．
 
 # 特徴
 - Hubの各ポートに接続するデバイスの情報等をコンフィギュレーションファイル(Yaml)を記入することでmicro-ROSファームウェアを自動生成
     - micro-ROSパッケージとカスタムメッセージ型定義パッケージを生成
 - 本ツールの利用により，ユーザはmicro-ROSの通信相手であるROS2アプリ等の開発に専念できる
+- ROSのトピック通信を使用する
 
 # 構成
-- SPIKR Prime HubとRaspberry Piを使用する
-    - 両者はシリアル(UART)により接続する
-- Prime Hub上でmicro-ROSプログラムを稼働しRaspberry Pi上でmicro-ROS Agentを稼働する
-    - Prime Hub向けのmicro-ROSプログラムを本ツールが自動生成する
-    - 生成されたmicro-ROSプログラムはPrime Hubに接続されたセンサの値の取得・publishや，アクチュエータへの指令値のsubscribe・出力などを行う
-    - ユーザはmicro-ROSプログラムと通信を行うROS2アプリを開発する
-        - ROS2アプリはmicro-ROS Agentを実行するRaspberry Pi上や外部の汎用PCで開発
+- SPIKE Prime Hub(Hub)と, micro-ROS Agant(Agant)の実行やROS2アプリの開発，及び本ツールを実行してmicro-ROSファームウェアを生成するためのUbuntuPCを使用する
+- Agentの実行やROS2アプリの開発・実行はRaspberryPiで行うことも可能
+- Agentを実行するPCとHubはUARTで接続する
 
 # 動作確認済みバージョン
 - spike-rt (GitHubコミット番号) : [f6724115b0ef8c8367a760eaec2840089e6b4e55](https://github.com/spike-rt/spike-rt/tree/f6724115b0ef8c8367a760eaec2840089e6b4e55)
 - micro-ROS_ASP3 (GitHubコミット番号) : [3a306729a797d0f4976daab50c5698acffe38a12](https://github.com/exshonda/micro-ROS_ASP3/tree/3a306729a797d0f4976daab50c5698acffe38a12)
-- Python : 3.10.12
+- Python : 3.10以降
 
 # 動作環境
 - ターゲット
-    - ハードウェア：Prime hub (STM32F413)
+    - ハードウェア：SPIKE Prime hub (STM32F413)
     - OS：SPIKE-RT
-- ホストPC（micro-ROSパッケージのビルド・ROS2アプリ開発に使用）
+- ホストPC（micro-ROSパッケージのビルドやmicro-ROS Agentの実行，ROS2アプリ開発に使用）
     - OS : Ubuntu20.04 LTSまたはUbuntu22.04 LTS
         <!--
         - 理論上はRaspberry Pi（Raspberry Pi OS 64bit）でも可能\
@@ -35,12 +32,12 @@ Prime Hub向けソフトウェアプラットホームである[spike-rt](https:
         - Raspberry Piでのmicro-ROSビルドの動作確認は未実施\
         - Raspberry PiでのROS2アプリ開発は可能であることを確認済み\
         -->
-- Raspberry Pi (micro-ROS Agentの実行に使用)
+- Raspberry Pi (オプション，micro-ROS Agentの実行・ROS2アプリ開発に使用)
     - ハードウェア：Raspberry Pi (Raspberry Pi 4のみ動作確認済み)
     - OS：Raspberry Pi OS (64bit)
 
 - その他
-    - Prime HubとRaspberry PiはUARTにより接続する
+    - HubとAgentを実行するPCはUARTで接続する
         - 詳細は後述の「[環境構築](#環境構築)」を参考
 
 # 本ツールの使用方法
@@ -48,12 +45,13 @@ Prime Hub向けソフトウェアプラットホームである[spike-rt](https:
 - 仕様書「[SPECIFICATION.md](./SPECIFICATION.md)」に従いツールを使用する
 
 # 環境構築
-## spike-rtとmicro-ROS_ASP3をインストール
+## Ubuntu PC側の環境構築
+### spike-rtとmicro-ROS_ASP3をインストール
 - micro-ROSファームウェアのビルドを行うPC(Linux)上でワークスペースを作成
     ```
     mkdir ~/asp_uros_ws
     ```
-- spike-rtとmicro-ROS_ASP3をインストール
+- ワークスペース上にspike-rtとmicro-ROS_ASP3をインストール
     - クローン
     ```
     cd ~/asp_uros_ws 
@@ -74,25 +72,49 @@ Prime Hub向けソフトウェアプラットホームである[spike-rt](https:
 - micro-ROS_ASP3でPrime Hub向けの設定を行う
     - [micro-ROS_ASP3/spike-rt/README.md](https://github.com/exshonda/micro-ROS_ASP3/blob/master/spike-rt/README.md)を参考にspike-rt対応のセットアップを行う
     - `micro-ROS_ASP3/Makefile.config`のターゲットボードをPrime Hubを選択する
-    - `micro-ROS_ASP3/micro_ros_asp/micro_ros_asp.mk`のINCLUDESに下記を追加
-        ```
-        INCLUDES += -I$(MIROROS_ASP3_TOP_DIR)/$(MICROROS_INC)/spike_ros_msg
-        ```
+    - ToDo オブジェクト数の静的指定
 
-## 本ツールのインストール
+### SPIKE Prime HubとUbuntuPCを接続する
+- UbuntuPC上でAgentを実行する場合のみ必要
+    - Agentを実行するPCとHubを接続する
+- PCとHubはUARTにより接続する
+    - Hub側は接続ケーブルを**ポートF**に接続する
+    - PC側はUSB等で接続する
+### エージェントのビルドと実行
+- ToDo
+
+### 本ツールのインストール
 - micro-ROS_ASP3の直下にインストール
     ```
     cd ~/asp_uros_ws/micro-ROS_ASP3
     git clone git@github.com:Hiyama1026/uros_spike-rt_gen.git
     ```
+### ROS2のインストール
+- micro-ROS_ASP3のセットアップでインストールを既に実施した場合は不要
+- [公式サイト](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html)等のサイトや後述の付録を参考にしてインストールする
 
-## rasberryPi側の環境構築
+### ROS2ワークスペースを作成する
+- micro-ROS_ASP3と同じ階層に作成する
+- 名前は`ros2_ws`とする
+```
+cd ~/asp_uros_ws
+mkdir ros2_ws
+cd ros2_ws ; mkdir src
+colcon build
+. install/setup.bash
+```
+
+
+## rasberryPi側の環境構築(オプション)
 ### rasberryPi OS (**64bit**)をインストール
 - [インストラー](https://www.raspberrypi.com/software/)をインストール
 - インストラーからrasberryPi OS(64bit)をインストール
     - ROSを動かすために64bit版をインストールする
 
 ### GPIOの接続を有効にする
+- micro-ROS AgentをRaspberryPi上で実行する場合のみ必要
+- GPIOピンを使用せずにUSB等でRaspberryPiに接続する場合は不要
+
 1. 下記のコマンドで設定ファイルを開く
     ```bash
     sudo nano /boot/config.txt
@@ -108,8 +130,6 @@ Prime Hub向けソフトウェアプラットホームである[spike-rt](https:
     sudo reboot
     ```
 
-1. シリアル通信のケーブルをrasberryPiに接続する
-    - 参考：[RasPike](https://github.com/ETrobocon/RasPike/wiki/connect_raspi_spike)
 
 ### エージェントのビルドと実行（方法1，2のどちらでも可）
 #### エージェントのビルドと実行:方法1
@@ -166,11 +186,20 @@ Prime Hub向けソフトウェアプラットホームである[spike-rt](https:
     ros2 run micro_ros_agent micro_ros_agent serial --dev [device]
     ```    
 
-## ROS2のインストール（ROS2アプリの開発に必要）
-### ROS2アプリをUbuntuPCで開発する場合（推奨）
-- 公式サイトを参考にしてROS2パッケージをインストール
-    - [ここ](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html)など
-- 以下は[上記サイト](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html)を参考にしたUbuntu PCにROS2 Humbleをインストールする手順
+## Prime HubとRaspberry Piを接続
+- シリアル通信のケーブル（UART）をrasberryPiに接続する
+    - 参考：[RasPike](https://github.com/ETrobocon/RasPike/wiki/connect_raspi_spike)
+- Raspberry Piに接続したシリアルケーブルをPrime Hubの**ポートF**に接続する
+
+## ROS2のインストール
+- ROS2アプリをRaspberryPi上で開発する場合は実施する
+- 付録の「[ROS2のRaspberry Piへのインストール方法](#ros2のraspberry-piへのインストール方法)」に従いインストールする
+
+
+## 付録
+### ROS2 HumbleのUbuntuPCへのインストール方法
+- [公式サイト](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html)を参考にした手順
+
 1. ロケールを設定
     ```
     locale  # check for UTF-8
@@ -252,27 +281,10 @@ Prime Hub向けソフトウェアプラットホームである[spike-rt](https:
         . install/setup.bash
         ```
 
-### ROS2アプリをその他OSの汎用PC（Windows，RHEL，macOS）で開発する場合
+### ROS2アプリをその他OSの汎用PC（Windows，RHEL，macOS）へのインストール方法
 - [ここ](https://docs.ros.org/en/humble/Installation.html)などのROS2公式サイトを参考にインストールする
+- 未確認
 
-### ROS2アプリをRaspberry Pi上で開発する場合
-- 後述の付録「[ROS2のRaspberry Piへのインストール方法](#ros2のraspberry-piへのインストール方法)」を参照
-<!--
-1. **Cパッケージのビルド時にエラーになる場合の解決方法**
-    - Cパッケージ(raspike_uros_msg)のビルドでエラーになる事がある
-    - その場合は`/opt/ros/humble/opt`にある`libcurl_vendor`フォルダを削除する
-        ```bash
-        cd /opt/ros/humble/opt
-        sudo rm -rf libcurl_vendor
-        cd ~/ros2_ws
-        colcon build
-        ```
--->
-## Prime HubとRaspberry Piを接続
-- 前述の手順でRaspberry Piに接続したシリアルケーブルをPrime Hubの**ポートF**に接続する
-
-
-## 付録
 ### ROS2のRaspberry Piへのインストール方法
 1. アップデート
     ```bash

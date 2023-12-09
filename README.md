@@ -81,7 +81,7 @@ SPIKE Prime Hub向けのソフトウェアプラットホームである[spike-r
     - Hub側は接続ケーブルを**ポートF**に接続する
     - PC側はUSB等で接続する
 </br>
-![connect_hub_ub](img/ubuntu_hub_connect.jpg)
+<img src="img/ubuntu_hub_connect.jpg" width="30%">
 </br>
 
 ### エージェントのビルドと実行

@@ -386,7 +386,7 @@ def motor_port_dep_generator(port, port_obj):
     else:
         m_call_back = re.sub('<S', '', m_call_back)
         m_call_back = re.sub('<P(.|\s)*?<P', '', m_call_back)
-    m_call_back += re.sub('@pkg_name@', glb.msg_pkg_name, m_call_back)
+    m_call_back = re.sub('@pkg_name@', glb.msg_pkg_name, m_call_back)
     glb.motor_callback_func += ('\n' + re.sub('@@', port, m_call_back) + '\n')
 
 

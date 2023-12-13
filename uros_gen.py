@@ -22,7 +22,7 @@ class Setup_val:
 suv = Setup_val()
 
 def show_help():
-    with open('usage.txt', encoding='utf-8')as hlp:
+    with open('lib/usage.txt', encoding='utf-8')as hlp:
         h = hlp.read()
     
     print(h)

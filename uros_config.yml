@@ -1,17 +1,25 @@
 PortA:
-  device: color-sensor
-  qos: reliable
-  enable_lights: False
+  device: motor
+  qos: best-effort
+  wise: clock
+  run_mode: set-power
 
-PortB:
-  device: ultrasonic-sensor
-  qos: reliable
-  enable_lights: False
+PortD:
+  device: motor
+  qos: best-effort
+  wise: counter-clock
+  run_mode: set-speed
+
+PortE:
+  device: motor
+  qos: best-effort
+  wise: clock
+  run_mode: set-speed
 
 hub:
-  hub_program_cycle: 10
+  hub_program_cycle: 100
   enable_imu: False
   enable_battery_management: False
-  enable_button: True
+  enable_button: False
   enable_speaker: False
-  opening: False
+  opening: True

@@ -17,7 +17,7 @@ PortE:
   run_mode: set-speed
 
 hub:
-  hub_program_cycle: 100
+  hub_program_cycle: 10
   enable_imu: False
   enable_battery_management: False
   enable_button: False

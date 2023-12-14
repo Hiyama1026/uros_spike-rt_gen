@@ -44,7 +44,7 @@ class MyPublisherNode(Node):
 
             motorA_st_rs.motor_stop_hold = 2    # motor hold
             motorA_st_rs.motor_reset = True
-            motorD_speed.data = 500
+            motorD_speed.data = 400
 
             self.motorA_stop_reset_publisher.publish(motorA_st_rs)
             self.motorD_speed_publisher.publish(motorD_speed)
@@ -55,7 +55,7 @@ class MyPublisherNode(Node):
 
             motorD_st_rs.motor_stop_hold = 1    # motor stop
             motorD_st_rs.motor_reset = True
-            motorE_speed.data = 500
+            motorE_speed.data = 400
             
             self.motorD_stop_reset_publisher.publish(motorD_st_rs)
             self.motorE_speed_publisher.publish(motorE_speed)
@@ -66,7 +66,7 @@ class MyPublisherNode(Node):
 
             motorE_st_rs.motor_stop_hold = 1    # motor stop
             motorE_st_rs.motor_reset = True
-            motorA_speed.data = 50
+            motorA_speed.data = 40
 
             self.motorE_stop_reset_publisher.publish(motorE_st_rs)
             self.motorA_speed_publisher.publish(motorA_speed)
@@ -86,7 +86,7 @@ class MyPublisherNode(Node):
 
         if self.is_first:
             motorA_speed = Int16()
-            motorA_speed.data = 50
+            motorA_speed.data = 40
             self.motorA_speed_publisher.publish(motorA_speed)
 
             if self.motorA_count - self.pre_motorA_count < 2:

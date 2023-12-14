@@ -1,0 +1,25 @@
+PortA:
+  device: motor
+  qos: best-effort
+  wise: clock
+  run_mode: set-power
+
+PortD:
+  device: motor
+  qos: best-effort
+  wise: counter-clock
+  run_mode: set-speed
+
+PortE:
+  device: motor
+  qos: best-effort
+  wise: clock
+  run_mode: set-speed
+
+hub:
+  hub_program_cycle: 100
+  enable_imu: False
+  enable_battery_management: False
+  enable_button: False
+  enable_speaker: False
+  opening: True

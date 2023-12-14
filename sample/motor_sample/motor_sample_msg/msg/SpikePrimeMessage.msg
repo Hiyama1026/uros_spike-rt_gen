@@ -1,0 +1,3 @@
+int32 motor_a_count
+int32 motor_d_count
+int32 motor_e_count

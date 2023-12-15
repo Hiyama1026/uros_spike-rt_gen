@@ -437,7 +437,7 @@ def color_port_dep_generator(port, port_obj):
 
     if port_obj.config.enable_lights == True:
         glb.color_callback_func += ('\n' + re.sub('<L', '', c_call_bk_func))
-        create_init_dev_subscriber(port_obj, cb.current_light_subscriver_name, gen_msg_def(glb.color_light_type_form), glb.color_light_topic)
+        create_init_dev_light_subscriber(port_obj, cb.current_light_subscriver_name, gen_msg_def(glb.color_light_type_form), glb.color_light_topic)
         create_add_dev_executor(port_obj, cb.current_light_subscriver_name, cb.current_light_msg_value_name, glb.color_light_callback_form)
     else:
         glb.color_callback_func += ('\n' + re.sub('<L(.|\s)*?<L', '', c_call_bk_func))
@@ -473,7 +473,7 @@ def ultra_port_dep_generator(port, port_obj):
 
     if port_obj.config.enable_lights == True:                           # カラーライト有効
         glb.ultra_callback_func += ('\n' + re.sub('<L', '', u_call_bk_func))
-        create_init_dev_subscriber(port_obj, cb.current_light_subscriver_name, gen_msg_def(glb.ultra_light_type_form), glb.ultra_light_topic)
+        create_init_dev_light_subscriber(port_obj, cb.current_light_subscriver_name, gen_msg_def(glb.ultra_light_type_form), glb.ultra_light_topic)
         create_add_dev_executor(port_obj, cb.current_light_subscriver_name, cb.current_light_msg_value_name, glb.ultra_light_callback_form)
     else:
         glb.ultra_callback_func += ('\n' + re.sub('<L(.|\s)*?<L', '', u_call_bk_func))
@@ -515,13 +515,20 @@ def gen_dev_func_in_timer_callback(port, port_obj):
         gen_text = re.sub('@@', port, glb.force_timer__func_form)
     return gen_text
 
+# PUPデバイス向けサブスクライバの生成
 def create_init_dev_subscriber(port_obj, sub_name, msg_type_form, topic_name_form):
+    subscriber_script_gen(port_obj.config.qos, port_obj.config.port, sub_name, msg_type_form, topic_name_form)
+
+def create_init_dev_light_subscriber(port_obj, sub_name, msg_type_form, topic_name_form):
+    subscriber_script_gen(port_obj.config.light_qos, port_obj.config.port, sub_name, msg_type_form, topic_name_form)
+
+def subscriber_script_gen(qps, port, sub_name, msg_type_form, topic_name_form):
     gen_text = ''
     parsed_msg_type = msg_type_form.split('__')
 
-    topic_name_form = re.sub('@', port_obj.config.port, topic_name_form)
+    topic_name_form = re.sub('@', port, topic_name_form)
 
-    if port_obj.config.qos == 'reliable':
+    if qps == 'reliable':
         gen_text = re.sub('@sub_name@', sub_name, glb.gen_reliable_subscriber_format)
         gen_text = re.sub('@msg_arg1@', parsed_msg_type[0], gen_text)
         sep_arg_2 = parsed_msg_type[2].split(' ')
@@ -536,6 +543,7 @@ def create_init_dev_subscriber(port_obj, sub_name, msg_type_form, topic_name_for
 
     return
 
+# Hub ノードのパブリッシャを生成
 def create_init_b_effort_publisher(pub_name, msg_type_form, topic_name):
     gen_text = ''
     parsed_msg_type = msg_type_form.split('__')
@@ -547,6 +555,7 @@ def create_init_b_effort_publisher(pub_name, msg_type_form, topic_name):
     glb.publishers += re.sub('@topic_name@', topic_name, gen_text)
     return
 
+# Hub内蔵モジュール向けサブスクライバの生成
 def create_init_hub_subscriber(sub_name, msg_type_form, topic_name):
     gen_text = ''
     parsed_msg_type = msg_type_form.split('__')

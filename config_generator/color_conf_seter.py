@@ -77,12 +77,12 @@ def set_color_config_contents(port, keys, values):
         if 'light_qos' in keys:
             light_qos_value = values[keys.index('light_qos')]
             if light_qos_value == 'best-effort' or light_qos_value == 'reliable':
-                conf_contents.qos = light_qos_value
+                conf_contents.light_qos = light_qos_value
                 color_config_count += 1
             else:
                 setting_err(port, 'light_qos')
         else:
-            conf_contents.qos = 'best-effort'
+            conf_contents.light_qos = 'best-effort'
     else:
         pass
 

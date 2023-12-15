@@ -1,20 +1,17 @@
 PortA:
-  device: motor
-  qos: best-effort
-  wise: clock
-  run_mode: set-power
+  device: color-sensor
+  qos: reliable
+  enable_lights: True
+  light_qos: best-effort
 
-PortD:
-  device: motor
-  qos: best-effort
-  wise: counter-clock
-  run_mode: set-speed
+PortB:
+  device: ultrasonic-sensor
+  qos: reliable
+  enable_lights: True
+  light_qos: best-effort
 
 PortE:
-  device: motor
-  qos: best-effort
-  wise: clock
-  run_mode: set-speed
+  device: force-sensor
 
 hub:
   hub_program_cycle: 10

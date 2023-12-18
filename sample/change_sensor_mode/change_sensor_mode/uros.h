@@ -36,10 +36,10 @@ static uint8_t img_sad[1][25] = {
 };
 
 /*Timer-callback cycle*/
-#define SP_ROS_STA_CYC 10
+#define SP_ROS_STA_CYC 100
 
 /*opening message*/
-#define DISABLE_OPENING false
+#define DISABLE_OPENING true
 
 /*
  *  関数のプロトタイプ宣言

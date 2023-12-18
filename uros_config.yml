@@ -1,20 +1,17 @@
 PortA:
   device: color-sensor
-  enable_lights: True
-  light_qos: best-effort
+  qos: reliable
+  enable_lights: False
 
 PortB:
   device: ultrasonic-sensor
-  enable_lights: True
-  light_qos: best-effort
-
-PortE:
-  device: force-sensor
+  qos: reliable
+  enable_lights: False
 
 hub:
-  hub_program_cycle: 10
+  hub_program_cycle: 100
   enable_imu: False
   enable_battery_management: False
-  enable_button: False
+  enable_button: True
   enable_speaker: False
   opening: True

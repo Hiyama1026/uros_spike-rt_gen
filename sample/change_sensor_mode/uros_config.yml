@@ -14,4 +14,4 @@ hub:
   enable_battery_management: False
   enable_button: True
   enable_speaker: False
-  opening: False
+  opening: True

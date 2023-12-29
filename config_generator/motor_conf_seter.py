@@ -60,16 +60,6 @@ def set_motor_config_contents(port, keys, values):
     motor_config_count = 0
     conf_contents = conf.motor_class()
 
-    if 'wise' in keys:
-        wise_val = values[keys.index('wise')]
-        if wise_val == 'clock' or wise_val == 'counter-clock':
-            conf_contents.wise = wise_val
-            motor_config_count += 1
-        else:
-            setting_err(port, 'wise')
-    else:
-        conf_contents.wise = "clock"
-
     if 'qos' in keys:
         qos_value = values[keys.index('qos')]
         if qos_value == 'best-effort' or qos_value == 'reliable':
@@ -79,6 +69,16 @@ def set_motor_config_contents(port, keys, values):
             setting_err(port, 'qos')
     else:
         conf_contents.qos = "best-effort"
+
+    if 'wise' in keys:
+        wise_val = values[keys.index('wise')]
+        if wise_val == 'clock' or wise_val == 'counter-clock':
+            conf_contents.wise = wise_val
+            motor_config_count += 1
+        else:
+            setting_err(port, 'wise')
+    else:
+        conf_contents.wise = "clock"
     
     if 'run_mode' in keys:
         run_mode_val = values[keys.index('run_mode')]

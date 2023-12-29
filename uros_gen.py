@@ -28,6 +28,68 @@ def show_help():
     print(h)
     exit(1)
 
+def gen_yaml():
+    port_name_code = ord('A')
+    dev_candidates = ['motor', 'color-sensor', 'ultrasonic-sensor', 'force-sensor', 'none', '']
+    Candedates = "[motor, color-sensor, ultrasonic-sensor, force-sensor, none (or empty)]"
+    yml_txt = ''
+
+    print("\"uros_config.yml\" generation mode.\n")
+
+    if os.path.isfile('uros_config.yml'):
+        # 設定ファイル削除確認 & 削除
+        print("WARN: \"uros_config.yml\" is already exist.")
+        while True:
+            c = input('Are you sure you want to permanently delete the old configuration file? [Y/n]: ')
+            if c in ['y', 'Y', 'yes', 'Yes', 'YES', '']:
+                os.remove('uros_config.yml')
+                print("Delete old configuration file.\n")
+                break
+            elif c in ['n', 'N', 'no', 'No', 'NO']:
+                print('Generation process stop.')
+                exit(1)
+            else:
+                print('Input error.')
+
+    print("Candedates : " + Candedates + "\n")
+    print("Input device name.")
+    
+    while port_name_code <= ord('E'):
+        while True:
+            dev = input('- Port' + chr(port_name_code) + ' : ')
+            if dev in dev_candidates:
+                yml_txt += get_yml_txt(chr(port_name_code), dev)
+                break
+            else:
+                print("\"" + dev + "\" is not candedate...")
+        port_name_code += 1
+    
+    with open('./lib/yaml/hub.yml', encoding='utf-8')as h_yaml:
+        hub_yaml = h_yaml.read()
+    yml_txt += hub_yaml
+
+    s_yaml = open('uros_config.yml', 'w')
+    s_yaml.write(yml_txt)
+    s_yaml.close()
+
+    print("\nConfiguration file template successfully generated.")
+    exit(1)
+
+def get_yml_txt(port_name, dev_name):
+    yml_lib_path = './lib/yaml/'
+    yml_txt = ''
+
+    if (dev_name == 'none') or (dev_name == ''):
+        return ''
+    else:
+        yml_txt = ('Port' + port_name + ':\n')
+        yml_lib_path += (dev_name + '.yml')
+        with open(yml_lib_path, encoding='utf-8')as lib_yaml:
+            l_yaml = lib_yaml.read()
+            yml_txt += (l_yaml + '\n\n')
+        
+        return yml_txt
+
 def set_cfgs(port, cfg_list, cfg_contents):
     
     if port == 'hub':
@@ -279,7 +341,7 @@ def export_ignore_count():
 # main()
 #
 def main():
-    valid_args = ['-l', '-u', '-lu', '-c', '-n', '-mc', '-py', '-cpp', '-f', '-h']
+    valid_args = ['-l', '-u', '-lu', '-c', '-n', '-mc', '-py', '-cpp', '-f', '-h', '-setup']
     invalid_args = list()
     gen_path = 'uros_spike-rt_gen/gen'
 
@@ -287,6 +349,8 @@ def main():
 
     if '-h' in glb.args:
         show_help()
+    if '-setup' in glb.args:
+        gen_yaml()
 
     if not os.path.isdir('gen'):
         os.mkdir('gen')

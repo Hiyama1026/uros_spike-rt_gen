@@ -1,0 +1,9 @@
+hub:
+  hub_program_cycle:           #cycle (ms)
+  enable_imu:                  #True or False
+  imu_mode:                    #gyro or temperature
+  enable_battery_management:   #True or False
+  enable_button:               #True or False
+  enable_speaker:              #True or False
+  speaker_volume:              #volume (1~100)
+  opening:                     #True or Fasle

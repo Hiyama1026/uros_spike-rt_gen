@@ -1,0 +1,4 @@
+  device: ultrasonic-sensor
+  qos:                 #best-effort or reliable
+  enable_lights:       #True or False
+  light_qos:           #best-effort or reliable

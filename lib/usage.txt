@@ -2,6 +2,7 @@ Usage: python3 uros_gen.py [options]
 
 Options Description:
   -n [name]    name the micro-ROS package ([custom message package name]=[name]_msg)
+  -setup       generate a configuration file templates (uros_config.yml)
   -c           display settings after code generation
   -l           build micro-ROS libraries automatically
   -u           build and write micro-ROS application automatically
@@ -10,7 +11,7 @@ Options Description:
   -py [name]   create ROS2 Python package in ROS2 workspase
   -cpp [name]  create ROS2 C++ package in ROS2 workspase
   -f           never asks for permission when this tool tries to delete a file (basically the yes to all)
-  -h           help command
+  -h           show this message
 
 Note:
   -l

@@ -135,4 +135,3 @@ def hub_seter(config_keys, config_contents):
 def setting_err(key):
     print('err: Incorrect value for hub ' + key + ' setting.')
     exit(1)
-    return

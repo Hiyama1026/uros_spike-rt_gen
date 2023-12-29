@@ -1,0 +1,4 @@
+  device: motor
+  qos:                 #best-effort or reliable
+  wise:                #clock or counter-clock
+  run_mode:            #set-power or set-speed

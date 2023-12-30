@@ -1,0 +1,8 @@
+hub:
+  hub_program_cycle: 10          #cycle (ms)
+  enable_imu: False                 #True or False
+  enable_battery_management: False  #True or False
+  enable_button: False              #True or False
+  enable_speaker: True             #True or False
+  speaker_volume: 40             #volume (1~100)
+  opening: True                    #True or Fasle

@@ -2,7 +2,7 @@ Usage: python3 uros_gen.py [options]
 
 Options Description:
   -n [name]    name the micro-ROS package ([custom message package name]=[name]_msg)
-  -setup       generate a configuration file templates (uros_config.yml)
+  -setup       generate a configuration file template (uros_config.yml)
   -c           display settings after code generation
   -l           build micro-ROS libraries automatically
   -u           build and write micro-ROS application automatically

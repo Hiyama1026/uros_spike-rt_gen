@@ -337,6 +337,10 @@ def export_ignore_count():
     if not conf.hub.ignore_conf == 0:
         print('WARN:' + str(conf.hub.ignore_conf) + ' unnecessary coufiguration on hub was ignored.')
 
+def export_log():
+    ex_path = 'gen/' + glb.package_name + '/' + glb.package_name + '.log'
+
+    shutil.copy('./uros_config.yml', ex_path)
 #
 # main()
 #
@@ -394,6 +398,8 @@ def main():
         make_msg.gen_custom_msg()
 
     arg_build_process()
+
+    export_log()
     
     if '-c' in glb.args:
         print("\n======= Configuration =======")

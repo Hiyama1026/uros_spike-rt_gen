@@ -1,0 +1,6 @@
+int8 color_b_mode_id
+int16 color_b_sensor_value_1
+int16 color_b_sensor_value_2
+int16 color_b_sensor_value_3
+int32 motor_c_count
+int32 motor_d_count

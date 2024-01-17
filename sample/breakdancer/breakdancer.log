@@ -1,0 +1,25 @@
+PortB:
+  device: color-sensor
+  qos: best-effort                #best-effort or reliable
+  enable_lights: True      #True or False
+  light_qos: best-effort          #best-effort or reliable
+
+PortC:
+  device: motor
+  qos: best-effort                #best-effort or reliable
+  wise: counter-clock               #clock or counter-clock
+  run_mode: set-speed           #set-power or set-speed
+
+PortD:
+  device: motor
+  qos: best-effort                #best-effort or reliable
+  wise: clock               #clock or counter-clock
+  run_mode: set-speed           #set-power or set-speed
+
+hub:
+  hub_program_cycle: 10          #cycle (ms)
+  enable_imu: False                 #True or False
+  enable_battery_management: False  #True or False
+  enable_button: True              #True or False
+  enable_speaker: False             #True or False
+  opening: True                    #True or Fasle

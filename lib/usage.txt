@@ -1,4 +1,4 @@
-Usage: python3 uros_gen.py [options]
+Usage: python3 generate_uros.py [options]
 
 Options Description:
   -n [name]    name the micro-ROS package ([custom message package name]=[name]_msg)

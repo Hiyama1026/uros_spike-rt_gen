@@ -12,7 +12,7 @@
       - メッセージ定義パッケージは「[micor-ROSパッケージ名]_msg」で生成される
     - 実行コマンド
         ```
-        python3 uros_gen.py [options]
+        python3 generate_uros.py [options]
         ```
 1. micro-ROSファームウェアをビルド
     - **使用するメッセージ定義パッケージに変更が加えられた場合のみ必要**
@@ -52,7 +52,7 @@
 
 ## オプション
 - 前述の使用手順を自動化するオプション等を用意
-- 自動生成時に`$ python3 uros_gen.py [option]`でオプションが利用可能
+- 自動生成時に`$ python3 generate_uros.py [option]`でオプションが利用可能
 
 | コマンド | オプション内容 |
 | :---:  | :---: |

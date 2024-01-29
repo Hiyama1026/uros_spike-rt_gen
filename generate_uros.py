@@ -6,11 +6,11 @@ import subprocess
 import re
 import global_def as glb
 import config_generator.config as conf
-import config_generator.motor_conf_seter as m_set
-import config_generator.color_conf_seter as c_set
-import config_generator.ultrasonic_conf_seter as u_set
-import config_generator.force_conf_seter as f_set
-import config_generator.hub_conf_seter as h_set
+import config_generator.motor_conf_setter as m_set
+import config_generator.color_conf_setter as c_set
+import config_generator.ultrasonic_conf_setter as u_set
+import config_generator.force_conf_setter as f_set
+import config_generator.hub_conf_setter as h_set
 import file_generator.c_body_generator as make_c
 import file_generator.c_header_generator as make_h
 import file_generator.custom_msg_generator as make_msg
@@ -51,8 +51,8 @@ def gen_yaml():
             else:
                 print('Input error.')
 
-    print("Candedates : " + Candedates + "\n")
     print("Input device name.")
+    print(glb.CYAN + glb.UNDERLINE + "Candedates : " + Candedates + glb.RESET)
     
     while port_name_code <= ord('E'):
         while True:
@@ -61,7 +61,7 @@ def gen_yaml():
                 yml_txt += get_yml_txt(chr(port_name_code), dev)
                 break
             else:
-                print("\"" + dev + "\" is not candedate...")
+                print("\"" + dev + "\" is not among the candedates...")
         port_name_code += 1
     
     with open('./lib/yaml/hub.yml', encoding='utf-8')as h_yaml:
@@ -93,41 +93,41 @@ def get_yml_txt(port_name, dev_name):
 def set_cfgs(port, cfg_list, cfg_contents):
     
     if port == 'hub':
-        h_set.hub_seter(cfg_list, cfg_contents)
+        h_set.hub_setter(cfg_list, cfg_contents)
 
     elif 'Port' in port:
         if 'device' in cfg_list:
             device_name = cfg_contents[cfg_list.index('device')]
         else:
-            print("err: Couldn't find the \"device\" configuration at " + port)
+            print(glb.RED + "err: Couldn't find the \"device\" configuration at " + port + glb.RESET)
             exit(1)
         
         if device_name == 'motor':
-            m_set.motor_seter(port, cfg_list, cfg_contents)
+            m_set.motor_setter(port, cfg_list, cfg_contents)
             glb.motor_number += 1
             glb.need_spike_prime_msg = True
             glb.need_custom_msg = True
 
         elif device_name == 'color-sensor':
-            c_set.color_seter(port, cfg_list, cfg_contents)
+            c_set.color_setter(port, cfg_list, cfg_contents)
             glb.color_number += 1
             glb.need_spike_prime_msg = True
             glb.need_custom_msg = True
         elif device_name == 'ultrasonic-sensor':
-            u_set.ultrasonic_seter(port, cfg_list, cfg_contents)
+            u_set.ultrasonic_setter(port, cfg_list, cfg_contents)
             glb.ultra_number += 1
             glb.need_spike_prime_msg = True
             glb.need_custom_msg = True
         elif device_name == 'force-sensor':
-            f_set.force_seter(port, cfg_list, cfg_contents)
+            f_set.force_setter(port, cfg_list, cfg_contents)
             glb.force_number += 1
             glb.need_spike_prime_msg = True
             glb.need_custom_msg = True
         else:
-            print("err: \"" + device_name + "\" is unknown device.")
+            print(glb.RED + "err: \"" + device_name + "\" is unknown device." + glb.RESET)
             exit(1)
     else:
-        print("err: \"" + port + "\" is unknown key.")
+        print(glb.RED + "err: \"" + port + "\" is unknown key." + glb.RESET)
         exit(1)
 
     return    
@@ -160,12 +160,12 @@ def read_name():
         glb.args.remove(glb.package_name)
         
         if not is_alphabet(glb.package_name[0]):
-            print('err: Package name must begin with an alphabet.')
+            print(glb.RED + 'err: Package name must begin with an alphabet.' + glb.RESET)
             exit(1)
 
         for char in glb.package_name:
             if (not is_alphabet(char)) and (not is_valid_char(char)):
-                print('err: Package name error. (inviled: ' + char + ')')
+                print(glb.RED + 'err: Package name error. (inviled: ' + char + ')' + glb.RESET)
                 exit(1)
         
         glb.msg_pkg_name = glb.package_name + '_msg'
@@ -186,16 +186,16 @@ def create_ros2_pkg(opt):
     create_cmd = "(cd ../../ros2_ws/src && "
 
     if not is_alphabet(ros2_pkg[0]):
-        print('err: ROS2 package name must begin with an alphabet.')
+        print(glb.RED + 'err: ROS2 package name must begin with an alphabet.' + glb.RESET)
         exit(1)
 
     for char in ros2_pkg:
         if (not is_alphabet(char)) and (not is_valid_char(char)):
-            print('err: Package name error. (inviled: ' + char + ')')
+            print(glb.RED + 'err: Package name error. (inviled: ' + char + ')' + glb.RESET)
             exit(1)
 
     if not os.path.isdir(ros2_ws_path):
-        print('err: Can not find ros2_ws')
+        print(glb.RED + 'err: Can not find ros2_ws' + glb.RESET)
         exit(1)
     
     if not os.path.isdir(ros2_source_path):
@@ -321,21 +321,26 @@ def duplicate_pkg(pkg_name, path, pkg_type):
         else:
             print('Input error.')
 
+def ignore_warnning_printer(ig_num, port):
+    if ig_num == 1:
+        print(glb.YELLOW + 'WARN: 1 unknown coufiguration on ' + port + ' was ignored.' + glb.RESET)
+    else:
+        print(glb.YELLOW + 'WARN: ' + str(ig_num) + ' unknown coufigurations on ' + port + ' were ignored.' + glb.RESET)
 
 def export_ignore_count():
 
     if not conf.portA.ignore_conf == 0:
-        print('WARN:' + str(conf.portA.ignore_conf) + ' unnecessary coufiguration on PortA was ignored.')
+        ignore_warnning_printer(conf.portA.ignore_conf, 'PortA')
     if not conf.portB.ignore_conf == 0:
-        print('WARN:' + str(conf.portB.ignore_conf) + ' unnecessary coufiguration on PortB was ignored.')
+        ignore_warnning_printer(conf.portB.ignore_conf, 'PortB')
     if not conf.portC.ignore_conf == 0:
-        print('WARN:' + str(conf.portC.ignore_conf) + ' unnecessary coufiguration on PortC was ignored.')
+        ignore_warnning_printer(conf.portC.ignore_conf, 'PortC')
     if not conf.portD.ignore_conf == 0:
-        print('WARN:' + str(conf.portD.ignore_conf) + ' unnecessary coufiguration on PortD was ignored.')
+        ignore_warnning_printer(conf.portD.ignore_conf, 'PortD')
     if not conf.portE.ignore_conf == 0:
-        print('WARN:' + str(conf.portE.ignore_conf) + ' unnecessary coufiguration on PortE was ignored.')
+        ignore_warnning_printer(conf.portE.ignore_conf, 'PortE')
     if not conf.hub.ignore_conf == 0:
-        print('WARN:' + str(conf.hub.ignore_conf) + ' unnecessary coufiguration on hub was ignored.')
+        ignore_warnning_printer(conf.hub.ignore_conf, 'hub')
 
 def export_log():
     ex_path = 'gen/' + glb.package_name + '/' + glb.package_name + '.log'
@@ -378,20 +383,21 @@ def main():
 
 
     with open('uros_config.yml', encoding='utf-8')as f:
-        motor_test = yaml.safe_load(f)
+        first_kval = yaml.safe_load(f)
 
-    for first_key in motor_test.keys():
+    for first_key in first_kval.keys():
             
         device_cfgs = list()
         cfg_contents = list()
-
-        for second_key in motor_test[first_key].keys():
-            device_cfgs.append(second_key)
-            cfg_contents.append((motor_test[first_key])[second_key])
+        if not first_kval[first_key] == None:
+            for second_key in first_kval[first_key].keys():
+                device_cfgs.append(second_key)
+                cfg_contents.append((first_kval[first_key])[second_key])
+        else:
+            cfg_contents = None
 
         set_cfgs(first_key, device_cfgs, cfg_contents)
     
-    export_ignore_count()
     make_c.gen_c_body()
     make_h.gen_c_header()
     if glb.need_custom_msg == True:
@@ -407,7 +413,9 @@ def main():
         print(glb.print_conf)
         print("======= Configuration =======\n")
     
-    print('Success!')
+    export_ignore_count()
+    
+    print('\nFrimware generation succeed!!')
 
 # mainルーチン
 if __name__ == "__main__":

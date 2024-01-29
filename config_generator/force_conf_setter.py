@@ -1,7 +1,7 @@
 import config_generator.config as conf
 import global_def as glb
 
-def force_seter(port, config_keys, config_contents):
+def force_setter(port, config_keys, config_contents):
     
     if port == 'PortA':
         conf.portA.device = config_contents[config_keys.index('device')]

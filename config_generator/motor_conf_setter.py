@@ -2,7 +2,7 @@ import config_generator.config as conf
 import global_def as glb
 
 
-def motor_seter(port, config_keys, config_contents):
+def motor_setter(port, config_keys, config_contents):
 
     if port == 'PortA':
         conf.portA.device = config_contents[config_keys.index('device')]
@@ -65,6 +65,8 @@ def set_motor_config_contents(port, keys, values):
         if qos_value == 'best-effort' or qos_value == 'reliable':
             conf_contents.qos = qos_value
             motor_config_count += 1
+        elif qos_value == None:     # 設定値未記入
+            conf_contents.qos = "best-effort"
         else:
             setting_err(port, 'qos')
     else:
@@ -75,6 +77,8 @@ def set_motor_config_contents(port, keys, values):
         if wise_val == 'clock' or wise_val == 'counter-clock':
             conf_contents.wise = wise_val
             motor_config_count += 1
+        elif wise_val == None:      # 設定値未記入
+            conf_contents.wise = "clock"
         else:
             setting_err(port, 'wise')
     else:
@@ -85,6 +89,8 @@ def set_motor_config_contents(port, keys, values):
         if run_mode_val == 'set-power' or run_mode_val == 'set-speed':
             conf_contents.run_mode = run_mode_val
             motor_config_count += 1
+        elif run_mode_val == None:  # 設定値未記入
+            conf_contents.run_mode = "set-power"
         else:
             setting_err(port, 'run_mode')
     else:
@@ -102,5 +108,5 @@ def conf_printer(obj):
     return
                   
 def setting_err(port, key):
-    print('err: Incorrect value for ' + port + ' ' + key + ' setting.')
+    print(glb.RED + 'err: Incorrect value for ' + port + ' ' + key + ' setting.' + glb.RESET)
     exit(1)

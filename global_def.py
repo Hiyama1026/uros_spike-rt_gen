@@ -126,3 +126,10 @@ Message
 msg_camke_list = ''     # 先頭に空白2つ
 
 spike_ros_msg_list = ''
+
+# text color
+RED            = '\033[31m'#(文字)赤
+YELLOW         = '\033[33m'#(文字)黄
+CYAN           = '\033[36m'#(文字)シアン
+UNDERLINE      = '\033[4m'#下線
+RESET          = '\033[0m'#全てリセット

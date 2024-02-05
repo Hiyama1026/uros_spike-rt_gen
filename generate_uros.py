@@ -323,12 +323,17 @@ def duplicate_pkg(pkg_name, path, pkg_type):
 
 def ignore_warnning_printer(ig_num, port):
     if ig_num == 1:
-        print(glb.YELLOW + 'WARN: 1 unknown coufiguration on ' + port + ' was ignored.' + glb.RESET)
+        print(glb.YELLOW + '   1 unknown coufiguration on ' + port + ' was ignored.' + glb.RESET)
     else:
-        print(glb.YELLOW + 'WARN: ' + str(ig_num) + ' unknown coufigurations on ' + port + ' were ignored.' + glb.RESET)
+        print(glb.YELLOW + '   ' + str(ig_num) + ' unknown coufigurations on ' + port + ' were ignored.' + glb.RESET)
 
 def export_ignore_count():
+    ig_count = conf.portA.ignore_conf + conf.portB.ignore_conf + conf.portC.ignore_conf + conf.portD.ignore_conf + conf.portE.ignore_conf + conf.hub.ignore_conf
 
+    if ig_count == 0:
+        return
+
+    print(glb.YELLOW + '\n WARN: Ignored configuration exist (Warnning from uros_spike-rt_gen).' + glb.RESET)
     if not conf.portA.ignore_conf == 0:
         ignore_warnning_printer(conf.portA.ignore_conf, 'PortA')
     if not conf.portB.ignore_conf == 0:

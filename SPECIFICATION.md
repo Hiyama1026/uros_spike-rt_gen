@@ -2,6 +2,22 @@
 - micro-ROSファームウェア自動生成ツールの仕様書
 - [README.md](./README.md)の「環境構築」の完了が前提条件である
 
+# 目次
+- [ツールの使用方法](#ツールの使用方法)
+- [設定ファイル（uros_config.yml）の記述方法](#設定ファイルuros_configymlの記述方法)
+- [トピックの扱い方](#トピックの扱い方)
+- [センサモード](#センサモード)
+- [カラーコード](#カラーコード)
+- [注意](#注意)
+- [付録](#付録)
+  - [uros_configyml記述例](#uros_configyml記述例)
+  - [ROS 2でトピックのQoSを指定する方法（Python）](#ros-2でトピックのqosを指定する方法python)
+
+<br>
+<br>
+<br>
+<br>
+
 # ツールの使用方法
 ## 本ツールによる自動生成からROS2アプリ開発までの流れ
 1. 設定ファイル「uros_config.yml」に各種設定を記述
@@ -68,6 +84,9 @@
 | -cpp [name] | ros2_wsにROS2のC++パッケージを生成</br>同一名のパッケージが存在する場合は既存のものを削除する |
 | -f | 本ツールがファイル削除する時に確認メッセージを表示しない |
 
+<br>
+<br>
+
 # 設定ファイル（uros_config.yml）の記述方法
 ## デバイス情報の記述に関する注意
 - 設定ファイルには各ポートに接続するデバイスの情報とHub内蔵モジュールに関数情報を記載する．
@@ -76,6 +95,7 @@
 - インデントは必ず**半角スペース2つ**で行う
 - 設定内容は順不同で可
 - [sample](./sample/)を参考にする
+- 設定ファイルの記述例は後述の[付録](#uros_config.yml記述例)にも示している
 
 ## motorの設定内容
 
@@ -123,11 +143,166 @@
 | enable_speaker | Hub内蔵スピーカの音量 | 0 ~ 100の整数 | 50 |
 | opening | Hub起動時のメッセージ表示を有効にするか | True または False | False |
 
+<br>
+<br>
+
 # トピックの扱い方
-- ToDo
-- [sample](./sample/)を参考にする
+(※)[sample](./sample/)を参考にすると良い
+
+- PUPデバイス（センサモータなど）に対する情報を格納するトピックのトピック名は，格納するデータの内容とデバイスの接続ポートから名付けられる
+  - (例)ポートAに接続したモータへの速度指令値を格納したトピックのトピック名→**motorA_speed**
+  - 以降は **\[PORT\]** には接続ポートを表す**大文字**のアルファベットが入るものとする
+    - 上記の例では，motor[PORT]_speedであり，[PORT]=Aとなる
+
+- カスタムメッセージ型を使用したトピックの変数名も同様に，格納するデータの内容とデバイスの接続ポートから付与される
+  - (例)トピック「spike_status」に含まれる，ポートAに接続したモータのエンコーダ値を格納する変数の名前→**motor_a_count**
+    - 以降は **\[port\]** には接続ポートを表す**小文字**のアルファベットが入るものとする
+      - 上記の例では，motor_[port]_countとなり，[port]=aとなる
+
+- 各デバイスに対するトピックの名前や，含まれる変数の内容等の関係を以下に示す
+## ROS2→uROS（ユーザがパブリッシュ）のトピック
+### モータ
+| トピック名 | カスタムメッセージ型名 | 変数名 |変数型| 変数に格納されるデータの内容 |
+| ---  | --- | --- | --- | --- |
+|motor[PORT]_speed|Int16(標準メッセージ型)|data|int16|[PORT]に接続されたモータに対する回転速度指令値|
+|motor[PORT]_stop_reset|MotorStopReset|motor_stop_hold|int8|[PORT]に接続されたモータに対する停止指令値<br>0→操作無し，1→stop，2→hold|
+|(同上)|(同上)|motor_reset|bool|[PORT]に接続されたモータに対するエンコーダ値リセット指令<br>True→エンコーダ値リセット|
+
+### カラーセンサ
+| トピック名 | カスタムメッセージ型名 | 変数名 |変数型| 変数に格納されるデータの内容 |
+| ---  | --- | --- | --- | --- |
+|color_sensor[PORT]_mode|Int8(標準メッセージ型)|data|int8|[PORT]に接続されたカラーセンサに対するモード（後述）指令値|
+|color_sensor[PORT]_light|ColorLightMessage|light1|int8|[PORT]に接続されたカラーセンサの内蔵ライト1に対する輝度指令値(0~100)<br>ライトを有効化した時のみ使用|
+|(同上)|(同上)|light2|int8|[PORT]に接続されたカラーセンサの内蔵ライト2に対する輝度指令値(0~100)<br>ライトを有効化した時のみ使用|
+|(同上)|(同上)|light3|int8|[PORT]に接続されたカラーセンサの内蔵ライト3に対する輝度指令値(0~100)<br>ライトを有効化した時のみ使用|
+
+### 距離センサ
+| トピック名 | カスタムメッセージ型名 | 変数名 |変数型| 変数に格納されるデータの内容 |
+| ---  | --- | --- | --- | --- |
+|ultrasonic[PORT]_mode|Int8(標準メッセージ型)|data|int8|[PORT]に接続されたカラーセンサに対するモード（後述）指令値|
+|ultrasonic_sensor[PORT]_light|UltrasonicLightMessage|light1|int8|[PORT]に接続された距離センサの内蔵ライト1に対する輝度指令値(0~100)<br>ライトを有効化した時のみ使用|
+|(同上)|(同上)|light2|int8|[PORT]に接続された距離センサの内蔵ライト2に対する輝度指令値(0~100)<br>ライトを有効化した時のみ使用|
+|(同上)|(同上)|light3|int8|[PORT]に接続された距離センサの内蔵ライト3に対する輝度指令値(0~100)<br>ライトを有効化した時のみ使用|
+|(同上)|(同上)|light4|int8|[PORT]に接続された距離センサの内蔵ライト4に対する輝度指令値(0~100)<br>ライトを有効化した時のみ使用|
+
+### スピーカ
+| トピック名 | カスタムメッセージ型名 | 変数名 |変数型| 変数に格納されるデータの内容 |
+| ---  | --- | --- | --- | --- |
+|speaker_tone|SpeakerMessage|tone|int16|スピーカの周波数の指令値|
+|(同上)|(同上)|duration|int16|音を鳴らす時間(ms)|
+
+### IMU
+| トピック名 | メッセージ型名 | 変数名 |変数型| 変数に格納されるデータの内容 |
+| ---  | --- | --- | --- | --- |
+|imu_init|Bool(標準メッセージ型)|data|bool|IMUの初期化指令(Trueで初期化)|
 
 
+## uROS→ROS2(ユーザがサブスクライブ)のトピック
+### spike_status
+- このトピックにはHubに接続されたセンサのセンサ値等が格納される
+- 従って，デバイスの接続状況の変化に応じて格納される変数も変化する
+- 送信周期は設定ファイルで指定可能
+- QoSは**best-effort**
+
+| トピック名 | カスタムメッセージ型名 |
+| ---  | --- |
+|spike_status|SpikePrimeMessage|
+
+| 対象デバイス | 変数名 | 変数型 | 変数に格納されるデータの内容 |
+| --- | --- | --- | --- |
+|モータ|motor_[port]_count|int32|[port]に接続されたモータのエンコーダ値を格納する|
+|カラーセンサ|color_[port]_mode_id|int8|[port]に接続されたカラーセンサの現在のモードを格納|
+|カラーセンサ|color_[port]_sensor_value_1|int16|[port]に接続されたカラーセンサのセンサ値1を格納|
+|カラーセンサ|color_[port]_sensor_value_2|int16|[port]に接続されたカラーセンサのセンサ値2を格納|
+|カラーセンサ|color_[port]_sensor_value_3|int16|[port]に接続されたカラーセンサのセンサ値3を格納|
+|距離センサ|ultrasonic_[port]_mode_id|int16|[port]に接続された距離センサのセンサモード|
+|距離センサ|ultrasonic_[port]_mode_id|int16|[port]に接続された距離センサのセンサ値を格納|
+|フォースセンサ|force_[port]_sensor_pressed|bool|[port]に接続されたフォースセンサが押されているかを格納|
+|フォースセンサ|force_[port]_sensor_force|bool|[port]に接続されたフォースセンサが押されている力(N)を格納|
+|IMU|temperature|int8|IMUで取得した温度を格納<br>IMUモードがtemperatureの時に使用|
+|IMU|x_angular_velocity|float32|X軸方向の各加速度を格納<br>IMUモードがgyroの時に使用|
+|IMU|y_angular_velocity|float32|Y軸方向の各加速度を格納<br>IMUモードがgyroの時に使用|
+|IMU|z_angular_velocity|float32|Z軸方向の各加速度を格納<br>IMUモードがgyroの時に使用|
+
+### spike_power_status
+- このトピックはbattery_managementを有効化した場合に使用される
+- 送信周期は10秒
+- QoSは**best-effort**
+
+| トピック名 | カスタムメッセージ型名 |
+| ---  | --- |
+|spike_power_status|SpikePowerStatusMessage|
+
+| 変数名 | 変数型 | 変数に格納されるデータの内容 |
+| --- | --- | --- |
+|voltage|int16|Hubバッテリーの電圧|
+|current|int16|Hubバッテリーの電流|
+
+## spike_button_status
+- このトピックはHub内蔵ボタンの押下情報を格納
+- 押下状態が変化した場合に送信
+- QoSは**best-effort**
+- メッセージ型は標準メッセージ型
+
+| トピック名 | メッセージ型名 |
+| ---  | --- |
+|spike_button_status|Int8|
+
+| 変数名 | 変数型 | 変数に格納されるデータの内容 |
+| --- | --- | --- |
+|data|int8|Hub内蔵ボタンの押下情報|
+
+<br>
+<br>
+
+# センサモード
+- カラーセンサセンサと距離センサはモードを切り替えると取得値の種類が変化する
+    - カラーセンサ：全4モード
+    - 距離センサ：全2モード
+- センサモードの切り替えには若干の時間がかかるため，切り替わりが完了したことをユーザ側で確認する必要がある
+    - トピック「spike_status」に含まれる下記の変数が，それぞれ現在のセンサモードを格納している
+        - カラーセンサ：color_[port]_mode_id
+        - 距離センサ：ultrasonic_[port]_mode_id
+
+- 各モードの内容とカスタムメッセージ型の変数に格納される情報の詳細を以下に示す
+    - カラーセンサ
+
+    |モード|取得データ|メッセージ型とデータ内容の関係|
+    |---|---|---|
+    |0|無し（初期状態）|---|
+    |1|ambient値|send_color_value_1=ambient値<br>send_color_value_2=0<br>send_color_value_3=0|
+    |2|カラーコード（後述）|send_color_value_1=カラーコード<br>send_color_value_2=0<br>send_color_value_3=0|
+    |3|reflection値|send_color_value_1=reflection値<br>send_color_value_2=0<br>send_color_value_3=0|
+    |4|RGB値|send_color_value_1=R<br>send_color_value_2=G<br>send_color_value_3=B|
+    |5|HSV値|send_color_value_1=H<br>send_color_value_2=S<br>send_color_value_3=V|
+
+    - 距離センサ
+
+    |モード|取得データ|メッセージ型とデータ内容の関係|
+    |---|---|---|
+    |0|無し（初期状態）|---|    
+    |1|距離|ultrasonic_sensor=距離|    
+    |2|presemce値|ultrasonic_sensor=presemce値|
+
+<br>
+<br>
+
+# カラーコード
+- カラーコードの対応表を以下に示す
+
+|color code|color|
+|---|---|
+|0|NONE|
+|1|RED|
+|2|YELLOW|
+|3|GREEN|
+|4|BLUE|
+|5|WHILE|
+|6|BRACK|
+|-2|err|
+
+<br>
+<br>
 
 # 注意
 ## 送信QoS
@@ -142,6 +317,9 @@
     - ACK待ちの優先度はサブスクライバの実行優先度よりも高い
       - ACK待ちの間はサブスクライバが実行されない
     - ACK待ちの間に複数のデータを受信した場合は受信データをドロップする
+
+<br>
+<br>
 
 # 付録
 ## uros_config.yml記述例
@@ -183,3 +361,27 @@ hub:
   speaker_volume: 30
   opening: False 
 ```
+
+## ROS 2でトピックのQoSを指定する方法（Python）
+- QoSの指定はパブリッシャやサブスクライバの初期化関数で行う
+### best-effort
+- QoSProfileをインポートする必要がある
+  ```
+  from rclpy.qos import QoSProfile
+  ```
+- 下記の例のようにパブリッシャ・サブスクライバを初期化
+  ```
+  # パブリッシャ
+  create_publisher([message_type], "[topic_name]", qos_profile)
+  # サブスクライバ
+  create_subscription([message_type], "[topic_name]", [コールバック], qos_profile)
+  ```
+
+### reliable
+- 下記の例のようにパブリッシャ・サブスクライバを初期化
+  ```
+  # パブリッシャ
+  create_publisher([message_type], "[topic_name]", 10)
+  # サブスクライバ
+  create_subscription([message_type], "[topic_name]", [コールバック], 10)
+  ```

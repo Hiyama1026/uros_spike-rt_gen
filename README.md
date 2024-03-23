@@ -13,7 +13,7 @@
 
 # 構成
 - SPIKE Prime Hub(Hub)と, Linux環境(Ubuntu)を使用する
-    - Linuxはmicro-ROS Agant(Agant)の実行やROS2アプリの開発，及び本ツールを実行してmicro-ROSファームウェアを生成のに使用
+    - Linuxはmicro-ROS Agant(Agant)の実行やROS2アプリの開発，及び本ツールを実行してmicro-ROSファームウェアを生成するのに使用
 - Agentの実行やROS2アプリの開発・実行はRaspberry Piで行うことも可能（動作確認済み）
 - Agentを実行するPCとHubはUARTで接続する
 

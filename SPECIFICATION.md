@@ -364,16 +364,21 @@ hub:
 ## ROS 2でトピックのQoSを指定する方法（Python）
 - QoSの指定はパブリッシャやサブスクライバの初期化関数で行う
 ### best-effort
-- QoSProfileをインポートする必要がある
+- QoSProfileをインポートする
   ```
   from rclpy.qos import QoSProfile
   ```
-- 下記の例のようにパブリッシャ・サブスクライバを初期化
+- 下記の例のようにreliabilityを指定し，パブリッシャ・サブスクライバを初期化
   ```
-  # パブリッシャ
-  create_publisher([message_type], "[topic_name]", qos_profile)
-  # サブスクライバ
-  create_subscription([message_type], "[topic_name]", [コールバック], qos_profile)
+  def __init__(self):
+    super().__init__("[node_name]")
+
+    qos_profile = QoSProfile(depth=10, reliability=2)
+
+    # パブリッシャ
+    create_publisher([message_type], "[topic_name]", qos_profile)
+    # サブスクライバ
+    create_subscription([message_type], "[topic_name]", [コールバック], qos_profile)
   ```
 
 ### reliable

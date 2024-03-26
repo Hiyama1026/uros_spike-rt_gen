@@ -285,7 +285,7 @@ colcon build
 <Br>
 <Br>
 
-## 付録
+# 付録
 ### ROS2 HumbleのUbuntuPCへのインストール方法
 - [公式サイト](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html)を参考にした手順
 

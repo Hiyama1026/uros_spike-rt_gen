@@ -4,7 +4,6 @@
 - LEGO® Education SPIKE™ PrimeのHub上で実行可能なmicro-ROSファームウェアの自動生成ツール．
 - SPIKE Prime Hub向けのソフトウェアプラットホームである[spike-rt](https://github.com/spike-rt/spike-rt)と，ASP3カーネル向けmicro-ROSミドルウェアである[micro-ROS_ASP3](https://github.com/exshonda/micro-ROS_ASP3)を使用する．
 
-
 # 特徴
 - Hubの各ポートに接続するデバイスの情報等をコンフィギュレーションファイル(Yaml)を記入することでmicro-ROSファームウェアを自動生成
     - micro-ROSパッケージとカスタムメッセージ型定義パッケージを生成
@@ -280,6 +279,9 @@ colcon build
 - シリアル通信のケーブル（UART）をRaspberry Piに接続する
     - GPIOピンを使用した参考：[https://github.com/ETrobocon/RasPike/wiki/connect_raspi_spike](https://github.com/ETrobocon/RasPike/wiki/connect_raspi_spike)
 - Raspberry Piに接続したシリアルケーブルをPrime Hubの**ポートF**に接続する
+
+# 免責
+- 本ソフトウェアの利用により直接的または間接的に生じたいかなる損害に関しても，その責任を負わない．
 
 <Br>
 <Br>

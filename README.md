@@ -39,6 +39,8 @@
 
 # 本ツールの使用方法
 - 本ドキュメントの「[環境構築](#環境構築)」に従い環境を構築する
+- Wikiの[チュートリアル](https://github.com/Hiyama1026/uros_spike-rt_gen/wiki)を実施しツールの使い方を確認する（整備中）
+	- 仕様書（[SPECIFICATION.md](./SPECIFICATION.md)）を確認しながらチュートリアルを実施する事を推奨
 - 仕様書「[SPECIFICATION.md](./SPECIFICATION.md)」に従いツールを使用する
 
 <br>

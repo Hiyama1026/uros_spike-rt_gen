@@ -237,7 +237,7 @@
 |voltage|int16|Hubバッテリーの電圧|
 |current|int16|Hubバッテリーの電流|
 
-## spike_button_status
+### spike_button_status
 - このトピックはHub内蔵ボタンの押下情報を格納
 - 押下状態が変化した場合に送信
 - QoSは**best-effort**

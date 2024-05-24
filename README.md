@@ -28,10 +28,10 @@
 - ホストPC（本ツールの実行やmicro-ROS Agentの実行，ROS2アプリ開発に使用）
     - OS : Ubuntu20.04 LTSまたはUbuntu22.04 LTS
 - Raspberry Pi (オプション，micro-ROS Agentの実行やROS2アプリ開発に使用)
-    - ハードウェア：Raspberry Pi (**Raspberry Pi 4**のみ動作確認済み)
+    - ハードウェア：Raspberry Pi (Raspberry Pi 4のみ動作確認済み)
     - OS：Raspberry Pi OS (64bit)
-        - **2023-05-03リリース版**を使用することを推奨
-        - アーカイブ入手先例：[https://downloads.raspberrypi.com/raspios_arm64/images/?_gl=1*jkvy7z*_ga*MTk3MzQ4Nzc0Ny4xNzEyMjk0Njcx*_ga_22FD70LWDS*MTcxMjgyMDI0My4zLjEuMTcxMjgyMjM3OC4wLjAuMA..](https://downloads.raspberrypi.com/raspios_arm64/images/?_gl=1*jkvy7z*_ga*MTk3MzQ4Nzc0Ny4xNzEyMjk0Njcx*_ga_22FD70LWDS*MTcxMjgyMDI0My4zLjEuMTcxMjgyMjM3OC4wLjAuMA..)
+        - **2023-12-05リリース版**を使用することを推奨
+        - アーカイブ入手先例：[https://downloads.raspberrypi.com/raspios_armhf/images/?_gl=1*g4pkln*_ga*MTY4NzY2Mzg1NS4xNzA5MDI4NTI3*_ga_22FD70LWDS*MTcwOTEwMTA1MS4yLjEuMTcwOTEwMTUyNS4wLjAuMA..](https://downloads.raspberrypi.com/raspios_armhf/images/?_gl=1*g4pkln*_ga*MTY4NzY2Mzg1NS4xNzA5MDI4NTI3*_ga_22FD70LWDS*MTcwOTEwMTA1MS4yLjEuMTcwOTEwMTUyNS4wLjAuMA..)
 
 - その他
     - HubとAgentを実行するPCはUARTで接続する
@@ -127,8 +127,7 @@ colcon build
         - [CMake公式](https://cmake.org/download/)の[Older Releases](https://cmake.org/files/)からcmake-3.27.2-linux-aarch64.tar.gzをダウンロード
         - 下記コマンドで更新([参考サイト](https://qiita.com/koki2022/items/481c1b03445567263a97))
             - ``$ tar -zxvf cmake-3.27.2-linux-aarch64.tar.gz``
-            - ``$ cd cmake-3.27.2-linux-aarch64/``
-            - ``$ cd cmake-3.27.2-linux-aarch64/``
+            - ``$ sudo mv cmake-3.27.2-linux-aarch64/ /opt``
             - ``$ sudo ln -s /opt/cmake-3.27.2-linux-aarch64/bin/* /usr/bin``
         - .bashrcに以下を追加してロード ($ source ~/.bashrc)
             ```
@@ -173,7 +172,7 @@ colcon build
 - [インストラー](https://www.raspberrypi.com/software/)をインストール
 - インストラーからRaspberry Pi OS(64bit)をインストール
     - ROSを動かすために64bit版をインストールする
-    - 動作確認済みバージョンは**2023-05-03リリース版**
+    - 動作確認済みバージョンは**2023-12-05リリース版**
 
 ### ROS 2をのRaspberry Piにインストール
 1. アップデート

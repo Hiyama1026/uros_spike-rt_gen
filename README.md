@@ -30,7 +30,7 @@
 - Raspberry Pi (オプション，micro-ROS Agentの実行やROS2アプリ開発に使用)
     - ハードウェア：Raspberry Pi (Raspberry Pi 4のみ動作確認済み)
     - OS：Raspberry Pi OS (64bit)
-        - **2023-12-05リリース版**を使用することを推奨
+        - **2023-05-03リリース版**を使用することを推奨
         - アーカイブ入手先例：[https://downloads.raspberrypi.com/raspios_armhf/images/?_gl=1*g4pkln*_ga*MTY4NzY2Mzg1NS4xNzA5MDI4NTI3*_ga_22FD70LWDS*MTcwOTEwMTA1MS4yLjEuMTcwOTEwMTUyNS4wLjAuMA..](https://downloads.raspberrypi.com/raspios_armhf/images/?_gl=1*g4pkln*_ga*MTY4NzY2Mzg1NS4xNzA5MDI4NTI3*_ga_22FD70LWDS*MTcwOTEwMTA1MS4yLjEuMTcwOTEwMTUyNS4wLjAuMA..)
 
 - その他
@@ -172,7 +172,7 @@ colcon build
 - [インストラー](https://www.raspberrypi.com/software/)をインストール
 - インストラーからRaspberry Pi OS(64bit)をインストール
     - ROSを動かすために64bit版をインストールする
-    - 動作確認済みバージョンは**2023-12-05リリース版**
+    - 動作確認済みバージョンは**2023-05-03リリース版**
 
 ### ROS 2をのRaspberry Piにインストール
 1. アップデート

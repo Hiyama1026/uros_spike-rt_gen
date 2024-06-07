@@ -29,9 +29,11 @@
     - OS : Ubuntu20.04 LTSまたはUbuntu22.04 LTS
 - Raspberry Pi (オプション，micro-ROS Agentの実行やROS2アプリ開発に使用)
     - ハードウェア：Raspberry Pi (Raspberry Pi 4のみ動作確認済み)
-    - OS：Raspberry Pi OS (64bit)
-        - **2023-05-03リリース版**を使用することを推奨
-        - アーカイブ入手先例：[https://downloads.raspberrypi.com/raspios_armhf/images/?_gl=1*g4pkln*_ga*MTY4NzY2Mzg1NS4xNzA5MDI4NTI3*_ga_22FD70LWDS*MTcwOTEwMTA1MS4yLjEuMTcwOTEwMTUyNS4wLjAuMA..](https://downloads.raspberrypi.com/raspios_armhf/images/?_gl=1*g4pkln*_ga*MTY4NzY2Mzg1NS4xNzA5MDI4NTI3*_ga_22FD70LWDS*MTcwOTEwMTA1MS4yLjEuMTcwOTEwMTUyNS4wLjAuMA..)
+    - OS：下記のどちらでも可
+        - Raspberry Pi OS (64bit)
+            - **2023-05-03リリース版**を使用することを推奨
+            - アーカイブ入手先例：[https://downloads.raspberrypi.com/raspios_arm64/images/?_gl=1*jkvy7z*_ga*MTk3MzQ4Nzc0Ny4xNzEyMjk0Njcx*_ga_22FD70LWDS*MTcxMjgyMDI0My4zLjEuMTcxMjgyMjM3OC4wLjAuMA..](https://downloads.raspberrypi.com/raspios_arm64/images/?_gl=1*jkvy7z*_ga*MTk3MzQ4Nzc0Ny4xNzEyMjk0Njcx*_ga_22FD70LWDS*MTcxMjgyMDI0My4zLjEuMTcxMjgyMjM3OC4wLjAuMA..)
+        - Ubuntu22.04LTS
 
 - その他
     - HubとAgentを実行するPCはUARTで接続する
@@ -50,10 +52,9 @@
 ## Ubuntu PC側の環境構築
 (注)Raspberry Piの環境構築の方法とは異なる
 
-### ROS2のインストール
-- [公式サイト](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html)等のサイトや後述の付録を参考にしてインストールする
+### Ubuntu PCにROS2をインストール
+- [公式サイト](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html)等のサイトや後述の付録「[ROS2 HumbleのUbuntuPCへのインストール方法](#ros2-humbleのubuntupcへのインストール方法)」を参考にしてインストールする
     - ディストーションはHumbleのみ動作確認済み
-- もしくは付録の[ROS2 HumbleのUbuntuPCへのインストール方法](#ros2-humbleのubuntupcへのインストール方法)を参考にしてインストール
 
 ### spike-rtとmicro-ROS_ASP3をインストール
 - micro-ROSファームウェアのビルドを行うPC(Linux)上でワークスペースを作成
@@ -168,79 +169,90 @@ colcon build
 - 以下の場合にのみ実施する
     - micro-ROS AgentをRaspberry Pi上で実行する
     - ROS 2アプリをRaspberry Pi上で開発・実行する
-### Raspberry Pi OS (**64bit**)をインストール
-- [インストラー](https://www.raspberrypi.com/software/)をインストール
-- インストラーからRaspberry Pi OS(64bit)をインストール
-    - ROSを動かすために64bit版をインストールする
-    - 動作確認済みバージョンは**2023-05-03リリース版**
+### Raspberry Pi側のOSのインストールと実行
+#### A：Raspberry Pi OSを使用する場合
+1. Raspberry Pi OS (**64bit**)をインストール
+    - [Raspberry Pi OS Imager](https://www.raspberrypi.com/software/)等を使用してイメージファイルをSDに書き込む
+        - ROSを動かすために64bit版のRaspberry Pi OSを使用する
+        - 動作確認済みバージョンは**2023-05-03リリース版**
+            - 入手先例：[https://downloads.raspberrypi.com/raspios_arm64/images/?_gl=1*jkvy7z*_ga*MTk3MzQ4Nzc0Ny4xNzEyMjk0Njcx*_ga_22FD70LWDS*MTcxMjgyMDI0My4zLjEuMTcxMjgyMjM3OC4wLjAuMA..](https://downloads.raspberrypi.com/raspios_arm64/images/?_gl=1*jkvy7z*_ga*MTk3MzQ4Nzc0Ny4xNzEyMjk0Njcx*_ga_22FD70LWDS*MTcxMjgyMDI0My4zLjEuMTcxMjgyMjM3OC4wLjAuMA..)
 
-### ROS 2をのRaspberry Piにインストール
-1. アップデート
-    ```bash
-    sudo apt update
-    sudo apt -y upgrade 
-    ```
-
-1. ROS2パッケージをインストールする
-    ```bash
-    wget https://s3.ap-northeast-1.wasabisys.com/download-raw/dpkg/ros2-desktop/debian/bullseye/ros-humble-desktop-0.3.1_arm64.deb
-    sudo apt install -y ./ros-humble-desktop-0.3.1_arm64.deb
-    source /opt/ros/humble/setup.bash
-    ```
-
-1. ビルドツールのインストール
-    ```bash
-    sudo pip install vcstool colcon-common-extensions
-    ```
-
-1. ROS環境の自動読み込み設定
-    ```bash
-    echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
-    source ~/.bashrc
-    ```
-
-1. 動作確認
-    ```bash
-    ros2 launch demo_nodes_cpp talker_listener.launch.py
-    ```
-    - 下記のように出力されれば成功
-        ```
-        [INFO] [launch]: All log files can be found below /home/hiyama/.ros/log/2023-07-04-14-52-42-067659-raspi-1582
-        [INFO] [launch]: Default logging verbosity is set to INFO
-        [INFO] [talker-1]: process started with pid [1583]
-        [INFO] [listener-2]: process started with pid [1585]
-        [talker-1] [INFO] [1688449964.564641073] [talker]: Publishing: 'Hello World: 1'
-        [listener-2] [INFO] [1688449964.565626925] [listener]: I heard: [Hello World: 1]
-        [talker-1] [INFO] [1688449965.564647258] [talker]: Publishing: 'Hello World: 2'
-        [listener-2] [INFO] [1688449965.565234628] [listener]: I heard: [Hello World: 2]
-        ...
+1. ROS 2をのRaspberry Piにインストール
+    - アップデート
+        ```bash
+        sudo apt update
+        sudo apt -y upgrade 
         ```
 
-### GPIOの接続を有効にする（GPIOピンを使用してRaspberry PiとSPIKEをシリアル接続する場合に必要）
-- micro-ROS AgentをRaspberry Pi上で実行する場合のみ必要
-- GPIOピンを使用せずにUSB等でシリアル接続する場合は不要
+    - ROS2パッケージをインストールする
+        ```bash
+        wget https://s3.ap-northeast-1.wasabisys.com/download-raw/dpkg/ros2-desktop/debian/bullseye/ros-humble-desktop-0.3.1_arm64.deb
+        sudo apt install -y ./ros-humble-desktop-0.3.1_arm64.deb
+        source /opt/ros/humble/setup.bash
+        ```
 
-1. 下記のコマンドで設定ファイルを開く
-    ```bash
-    sudo nano /boot/config.txt
-    ```
+    - ビルドツールのインストール
+        ```bash
+        sudo pip install vcstool colcon-common-extensions
+        ```
 
-1. config.txtの最後に下記を追加
-    ```bash
-    dtoverlay=uart5
-    ```
-    
-1. リブートする
-    ```bash
-    sudo reboot
-    ```
+    - ROS環境の自動読み込み設定
+        ```bash
+        echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
+        source ~/.bashrc
+        ```
 
+    - 動作確認
+        ```bash
+        ros2 launch demo_nodes_cpp talker_listener.launch.py
+        ```
+        - 下記のように出力されれば成功
+            ```
+            [INFO] [launch]: All log files can be found below /home/hiyama/.ros/log/2023-07-04-14-52-42-067659-raspi-1582
+            [INFO] [launch]: Default logging verbosity is set to INFO
+            [INFO] [talker-1]: process started with pid [1583]
+            [INFO] [listener-2]: process started with pid [1585]
+            [talker-1] [INFO] [1688449964.564641073] [talker]: Publishing: 'Hello World: 1'
+            [listener-2] [INFO] [1688449964.565626925] [listener]: I heard: [Hello World: 1]
+            [talker-1] [INFO] [1688449965.564647258] [talker]: Publishing: 'Hello World: 2'
+            [listener-2] [INFO] [1688449965.565234628] [listener]: I heard: [Hello World: 2]
+            ...
+            ```
+
+1. GPIOの接続を有効にする（GPIOピンを使用してRaspberry PiとSPIKEをシリアル接続する場合に必要）
+    - micro-ROS AgentをRaspberry Pi上で実行する場合のみ必要
+    - GPIOピンを使用せずにUSB等でシリアル接続する場合は不要
+
+    1. 下記のコマンドで設定ファイルを開く
+        ```bash
+        sudo nano /boot/config.txt
+        ```
+
+    1. config.txtの最後に下記を追加
+        ```bash
+        dtoverlay=uart5
+        ```
+        
+    1. リブートする
+        ```bash
+        sudo reboot
+        ```
+
+#### B：Ubuntu20.04LTSを使用する場合
+1. Ubuntu22.04のイメージファイルを入手し，[RaspberryPI OS Imager](https://www.raspberrypi.com/software/)等を使用してSDカードに焼く
+    - イメージ入手先例：下記サイトのPreinstalled desktop image
+        - https://ftp.jaist.ac.jp/pub/Linux/ubuntu-cdimage/ubuntu/releases/22.04/release/
+        - ダウンロード後，xzファイルを解凍して使用
+
+1. - [ROS 2公式サイト](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html)，もしくは下記付録の「[ROS2 HumbleのUbuntuPCへのインストール方法](#ros2-humbleのubuntupcへのインストール方法)」に従い，ROS 2 Humbleをインストール
 
 ### エージェントのビルドと実行
-1. 参考
+(注)以下はRaspberr Pi OSとUbuntu22.04で共通の手順<BR>
+<BR>
 
-- 下記の記事を参考にで`Micro-XRCE-DDS-Agent`をビルドする<BR>
-<https://qiita.com/lutecia16v/items/5760551dd3a7a0d3e7d3>
+0. 参考
+    - 下記の記事を参考にで`Micro-XRCE-DDS-Agent`をビルドする
+        - <https://qiita.com/lutecia16v/items/5760551dd3a7a0d3e7d3>
 
 1. `Micro-XRCE-DDS-Agent`のコードをクローン
 
@@ -259,7 +271,21 @@ colcon build
     sudo make install
     sudo ldconfig /usr/local/lib/
     ```
-
+    - **CMakeのバージョンが古いと言われた場合は新しくする**
+        - [CMake公式](https://cmake.org/download/)の[Older Releases](https://cmake.org/files/)からcmake-3.27.2-linux-aarch64.tar.gzをダウンロード
+        - 下記コマンドで更新([参考サイト](https://qiita.com/koki2022/items/481c1b03445567263a97))
+            - ``$ tar -zxvf cmake-3.27.2-linux-aarch64.tar.gz``
+            - ``$ sudo mv cmake-3.27.2-linux-aarch64/ /opt``
+            - ``$ sudo ln -s /opt/cmake-3.27.2-linux-aarch64/bin/* /usr/bin``
+        - .bashrcに以下を追加してロード ($ source ~/.bashrc)
+            ```
+            export PATH=/opt/cmake-3.27.2-linux-aarch64/bin:$PATH
+            export CMAKE_PREFIX_PATH=/opt/cmake-3.27.2-linux-aarch64:$CMAKE_PREFIX_PATH
+            ```
+        - <補足>
+            - ``$ sudo apt remove cmake``等をするとROSが壊れる
+            - 壊れた場合は``$ sudo apt install -y ./ros-humble-desktop-0.3.1_arm64.deb``を再度実行
+            
 1. 実行
 
 - `verbose_level`を6に設定して、メッセージの受信を表示するようにする

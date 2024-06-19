@@ -222,7 +222,7 @@ def arg_build_process():
     target_uros_path = '../spike-rt/' + glb.package_name
     msg_source_path = 'gen/' + glb.package_name + '/' + glb.msg_pkg_name
     uros_source_path = 'gen/' + glb.package_name + '/' + glb.package_name
-    cmd_build_uros = "(cd " + target_uros_path + " && make deploy-dfu)"
+    cmd_build_uros = "(cd " + target_uros_path + " && make && make deploy-dfu)"
     ros2_target_path = '../../ros2_ws/src/' + glb.msg_pkg_name
     is_built = False
 
@@ -245,7 +245,7 @@ def arg_build_process():
             subprocess.run(cmd_build_uros, shell=True, check=True)   
         except subprocess.CalledProcessError:
             try:
-                subprocess.run(cmd_build_uros, shell=True, check=True)     # 並列ビルドによるエラー対策のためリトライ
+                subprocess.run(cmd_build_uros, shell=True, check=True)
             except subprocess.CalledProcessError:
                 exit(1)
         is_built = True
@@ -273,7 +273,7 @@ def arg_build_process():
         except subprocess.CalledProcessError:
             try:
                 print('\nLog from "uros_spike-rt_gen": Retry "$ make deploy-dfu"\n')
-                subprocess.run(cmd_build_uros, shell=True, check=True)     # 並列ビルドによるエラー対策のためリトライ
+                subprocess.run(cmd_build_uros, shell=True, check=True)
             except subprocess.CalledProcessError:
                 exit(1)  
     

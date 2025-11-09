@@ -68,11 +68,6 @@
     git clone -b v0.2.0 https://github.com/spike-rt/spike-rt.git
     git clone https://github.com/exshonda/micro-ROS_ASP3.git
     ```
-    - 動作確認済みバージョンへのコミット移動
-    ```
-    cd spike-rt
-    cd ../micro-ROS_ASP3
-    ```
 - spike-rtをセットアップ
     - [micro-ROS_ASP3/spike-rt/README.md](https://github.com/exshonda/micro-ROS_ASP3/blob/master/spike-rt/README.md)を参考にspike-rtにパッチを当てる
     - spike-rtをビルドする
@@ -80,7 +75,6 @@
         cd ~/asp_uros_ws/spike-rt
         ./scripts/build-test.sh
         ```
-        - spike-rt参考：[https://github.com/spike-rt/spike-rt](https://github.com/spike-rt/spike-rt)
 - micro-ROS_ASP3をセットアップ
     - 下記リポジトリのREADMEを参考にセットアップ
         - micro-ROS_ASP3：[https://github.com/exshonda/micro-ROS_ASP3](https://github.com/exshonda/micro-ROS_ASP3)
@@ -106,7 +100,25 @@ colcon build
     git clone git@github.com:Hiyama1026/uros_spike-rt_gen.git
     ```
 
-### エージェントのビルドと実行（micro-ROS AgentをUbuntu上で実行する場合のみ必要）
+### ビルドテスト
+- 本ツールを用いてテスト用パッケージを生成
+    ```sh
+    cd ~/asp_uros_ws2/micro-ROS_ASP3/uros_spike-rt_gen
+    python3 generate_uros.py -n build_test -l   # 詳しい使い方はSPECIFICATION.mdやWikiを参照
+    ```
+- micro-ROSパッケージをビルド用ディレクトリにコピーしてビルドが通るか確認
+    ```sh
+    cd ~/asp_uros_ws2/micro-ROS_ASP3/uros_spike-rt_gen
+    cp -r gen/build_test/build_test ../spike-rt && cd ../spike-rt/build_test
+    make
+    make asp.bin
+    ```
+- エラーが出ずに``asp.bin``が生成されていれば成功
+    ```sh
+    ls | grep asp.bin
+    ```
+
+### エージェントのビルドと実行（任意，micro-ROS AgentをUbuntu上で実行する場合のみ必要）
 0. 参考
     - 下記の記事を参考に`Micro-XRCE-DDS-Agent`をビルドする
         - <https://qiita.com/lutecia16v/items/5760551dd3a7a0d3e7d3>
@@ -159,7 +171,7 @@ colcon build
         ```
 
 
-### SPIKE Prime HubとUbuntuPCを接続する（micro-ROS AgentをUbuntu上で実行する場合のみ必要）
+### SPIKE Prime HubとUbuntuPCを接続する（任意，micro-ROS AgentをUbuntu上で実行する場合のみ必要）
 - UbuntuPC上でAgentを実行する場合のみ必要
     - Agentを実行するPCとHubを接続する
 - PCとHubはUARTにより接続する
@@ -170,7 +182,7 @@ colcon build
 </br>
 
 ## Raspberry Pi側の環境構築(オプション)
-- 以下の場合にのみ実施する
+- 以下のどちらかに該当する場合にのみ実施する
     - micro-ROS AgentをRaspberry Pi上で実行する
     - ROS 2アプリをRaspberry Pi上で開発・実行する
 ### Raspberry Pi側のOSのインストールと実行

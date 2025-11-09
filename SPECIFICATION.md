@@ -48,11 +48,11 @@
     - ビルド・書き込みの前に**micro-ROS Agentを起動**する
     - 生成したmicro-ROSパッケージを`micro-ROS_ASP3/spike-rt`にコピー
       - micro-ROSパッケージ名のデフォルトはspike_rt_uros
-    - 下記コマンドでビルド
+    - 下記コマンドでビルドとPrime Hubへ書き込み
       ```
       cd ~/asp_uros_ws/micro-ROS_ASP3/spike-rt/[micro-ROSパッケージ名]
       make
-      make deploy-dfu
+      make deploy-dfu   # asp.binの生成だけを行う場合は make asp.bin
       ```
       - **(注意) asp.binの作成は``make``→``make asp.bin``で行う**
         ```sh

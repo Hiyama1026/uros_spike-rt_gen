@@ -17,8 +17,8 @@
 - Agentを実行するPCとHubはUARTで接続する
 
 # 動作確認済みバージョン
-- spike-rt (GitHubコミット番号) : [f6724115b0ef8c8367a760eaec2840089e6b4e55](https://github.com/spike-rt/spike-rt/tree/f6724115b0ef8c8367a760eaec2840089e6b4e55)
-- micro-ROS_ASP3 (GitHubコミット番号) : [3a306729a797d0f4976daab50c5698acffe38a12](https://github.com/exshonda/micro-ROS_ASP3/tree/3a306729a797d0f4976daab50c5698acffe38a12)
+- spike-rt : [v0.2.0](https://github.com/spike-rt/spike-rt/tree/v0.2.0)
+- micro-ROS_ASP3 (GitHubコミット番号) : [dfe4cc40bade9aace0b047611e1c0ed6da1a5dc2](https://github.com/exshonda/micro-ROS_ASP3/tree/dfe4cc40bade9aace0b047611e1c0ed6da1a5dc2)
 - Python : 3.10以降
 
 # 動作環境
@@ -65,23 +65,27 @@
     - クローン
     ```
     cd ~/asp_uros_ws 
-    git clone https://github.com/spike-rt/spike-rt.git
+    git clone -b v0.2.0 https://github.com/spike-rt/spike-rt.git
     git clone https://github.com/exshonda/micro-ROS_ASP3.git
     ```
     - 動作確認済みバージョンへのコミット移動
     ```
     cd spike-rt
-    git checkout f6724115b0ef8c8367a760eaec2840089e6b4e55
     cd ../micro-ROS_ASP3
-    git checkout 3a306729a797d0f4976daab50c5698acffe38a12
     ```
-- spike-rtとmicro-ROS_ASP3をセットアップ
-    - それぞれを下記を参考にセットアップ
-        - spike-rt：[https://github.com/spike-rt/spike-rt](https://github.com/spike-rt/spike-rt)
+- spike-rtをセットアップ
+    - [micro-ROS_ASP3/spike-rt/README.md](https://github.com/exshonda/micro-ROS_ASP3/blob/master/spike-rt/README.md)を参考にspike-rtにパッチを当てる
+    - spike-rtをビルドする
+        ```sh
+        cd ~/asp_uros_ws/spike-rt
+        ./scripts/build-test.sh
+        ```
+        - spike-rt参考：[https://github.com/spike-rt/spike-rt](https://github.com/spike-rt/spike-rt)
+- micro-ROS_ASP3をセットアップ
+    - 下記リポジトリのREADMEを参考にセットアップ
         - micro-ROS_ASP3：[https://github.com/exshonda/micro-ROS_ASP3](https://github.com/exshonda/micro-ROS_ASP3)
-- micro-ROS_ASP3でPrime Hub向けの設定を行う
-    - [micro-ROS_ASP3/spike-rt/README.md](https://github.com/exshonda/micro-ROS_ASP3/blob/master/spike-rt/README.md)を参考にspike-rt対応のセットアップを行う
-    - `micro-ROS_ASP3/Makefile.config`のターゲットボードをPrime Hubを選択する
+    - ターゲットはPrime Hubにする
+        - `micro-ROS_ASP3/Makefile.config`のターゲットボードをPrime Hubを選択する
     - ToDo オブジェクト数の静的指定
 
 ### ROS2ワークスペースを作成する

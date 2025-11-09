@@ -49,16 +49,15 @@
     - 生成したmicro-ROSパッケージを`micro-ROS_ASP3/spike-rt`にコピー
       - micro-ROSパッケージ名のデフォルトはspike_rt_uros
     - 下記コマンドでビルド
-        ```
-        cd ~/asp_uros_ws/micro-ROS_ASP3/spike-rt/[micro-ROSパッケージ名]
-        make deploy-dfu
-        ```
-    - **並列ビルドが原因ででエラーになる事がある**
-        - その場合は2回ビルドを行う
-        ```
-        cd ~/asp_uros_ws/micro-ROS_ASP3/spike-rt/[micro-ROSパッケージ名]
-        make asp.bin
-        make deploy-dfu
+      ```
+      cd ~/asp_uros_ws/micro-ROS_ASP3/spike-rt/[micro-ROSパッケージ名]
+      make
+      make deploy-dfu
+      ```
+      - **(注意) asp.binの作成は``make``→``make asp.bin``で行う**
+        ```sh
+        make  # 必要
+        make asp.bin    # または make deploy-dfu
         ```
     - Hunの電源投入後，Prime Hubにスマイルマークが表示されたら成功
 1. ROS2アプリの開発準備

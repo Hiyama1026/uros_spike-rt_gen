@@ -15,8 +15,9 @@ class MyPublisherNode(Node):
         qos_profile = QoSProfile(depth=10, reliability=2)
 
         # 変数
+        self.before_setup = True
         self.is_first = True
-        self.pre_motorA_count = 0
+        self.hub_start = False
         self.motorA_count = 0
         self.motorD_count = 0
         self.motorE_count = 0
@@ -83,16 +84,14 @@ class MyPublisherNode(Node):
 
 
     def timer_on_tick(self):
+        if not self.hub_start:
+            return
 
-        if self.is_first:
+        if self.before_setup:
             motorA_speed = Int16()
             motorA_speed.data = 40
             self.motorA_speed_publisher.publish(motorA_speed)
-
-            if self.motorA_count - self.pre_motorA_count < 2:
-                self.pre_motorA_count = self.motorA_count
-                return
-            self.is_first = False
+            self.before_setup = False
 
         if self.switch_motor == 0:
             self.check_count(self.motorA_count)
@@ -103,6 +102,9 @@ class MyPublisherNode(Node):
 
     # サブスクライバー　コールバック
     def dev_status_on_subscribe(self, devise_status):
+        if self.is_first:
+            self.hub_start = True
+            self.is_first = False
         self.motorA_count = devise_status.motor_a_count
         self.motorD_count = devise_status.motor_d_count
         self.motorE_count = devise_status.motor_e_count        

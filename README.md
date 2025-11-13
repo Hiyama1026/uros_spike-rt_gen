@@ -75,12 +75,29 @@
         cd ~/asp_uros_ws/spike-rt
         ./scripts/build-test.sh
         ```
+- micro-ROSのオブジェクト数の宣言を変更
+    - ``~/asp_uros_ws/micro-ROS_ASP3/micro_ros_asp/asp_colcon.meta``の``rmw_microxrcedds``を編集
+        - 自身が作成するアプリケーションに応じて数を宣言 (余裕を持たせて宣言して良い)
+        - ↓参考 (本リポジトリのサンプルはこの設定で動作)
+            ```
+            "rmw_microxrcedds": {
+                "cmake-args": [
+                    "-DRMW_UXRCE_MAX_NODES=1",
+                    "-DRMW_UXRCE_MAX_PUBLISHERS=5",
+                    "-DRMW_UXRCE_MAX_SUBSCRIPTIONS=15",
+                    "-DRMW_UXRCE_MAX_SERVICES=1",
+                    "-DRMW_UXRCE_MAX_CLIENTS=1",
+                    "-DRMW_UXRCE_MAX_HISTORY=4",
+                    "-DRMW_UXRCE_TRANSPORT=custom"
+                ]
+            }
+            ```
+
 - micro-ROS_ASP3をセットアップ
     - 下記リポジトリのREADMEを参考にセットアップ
         - micro-ROS_ASP3：[https://github.com/exshonda/micro-ROS_ASP3](https://github.com/exshonda/micro-ROS_ASP3)
     - ターゲットはPrime Hubにする
         - `micro-ROS_ASP3/Makefile.config`のターゲットボードをPrime Hubを選択する
-    - ToDo オブジェクト数の静的指定
 
 ### ROS2ワークスペースを作成する
 - micro-ROS_ASP3と同じ階層に作成する
